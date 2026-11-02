@@ -9,7 +9,7 @@
   --accent-orange: #f97316;
   --accent-red: #ef4444;
 
-  /* Neumorphism Light Shadow System */
+  /* Neumorphism Light Shadows */
   --neu-shadow-flat: 9px 9px 18px #c5cbcf, -9px -9px 18px #ffffff;
   --neu-shadow-hover: 12px 12px 24px #bebec3, -12px -12px 24px #ffffff;
   --neu-shadow-inset: inset 3px 3px 6px #c5cbcf, inset -3px -3px 6px #ffffff;
@@ -70,7 +70,7 @@ body {
   margin-top: 6px;
 }
 
-/* Grid Layout */
+/* Grid Layout Cards */
 .inventory-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
