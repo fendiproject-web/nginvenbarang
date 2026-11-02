@@ -50,7 +50,6 @@ document.addEventListener('DOMContentLoaded', () => {
   inventoryData.forEach((item, index) => {
     const card = document.createElement('div');
     card.className = 'neu-card';
-    card.dataset.itemIndex = index;
 
     card.innerHTML = `
       <div class="card-header">
@@ -101,10 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const unitSelect = row.querySelector('.unit-select');
       const removeBtn = row.querySelector('.btn-remove-row');
 
-      qtyInput.addEventListener('input', () => {
-        updateCardTotal(card, item);
-      });
-
+      qtyInput.addEventListener('input', () => updateCardTotal(card, item));
       unitSelect.addEventListener('change', () => {
         if (!qtyInput.value || parseFloat(qtyInput.value) === 0) {
           qtyInput.value = 1;
@@ -164,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
     badge.textContent = `${formatNumber(totalBase)} ${item.baseUnit}`;
   }
 
-  // Format desimal: memotong 1 digit di belakang koma (misal 17.84692 -> 17,8)
+  // Format desimal: memotong 1 digit di belakang koma (contoh: 17.84692 -> 17,8)
   function formatNumber(val) {
     if (Number.isInteger(val)) return val.toString();
     const truncated = Math.floor(val * 10) / 10;
