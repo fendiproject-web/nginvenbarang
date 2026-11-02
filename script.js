@@ -1,4 +1,4 @@
-// Database konversi sesuai data tabel gudang
+// Database lengkap konversi barang gudang
 const inventoryData = [
   { name: "AYAM BESAR CUT 9", baseUnit: "PCS", conversions: { "PACK": 10, "PCS": 1 } },
   { name: "AYAM KECIL CUT 9", baseUnit: "PCS", conversions: { "PACK": 8, "PCS": 1 } },
@@ -30,139 +30,98 @@ const inventoryData = [
 ];
 
 document.addEventListener('DOMContentLoaded', () => {
-  const inventoryRows = document.getElementById('inventory-rows');
-  const addRowBtn = document.getElementById('add-row-btn');
-  const resetBtn = document.getElementById('reset-btn');
+  const itemsContainer = document.getElementById('items-container');
 
-  // Tambahkan baris pertama secara otomatis saat aplikasi dimuat
-  addRow();
+  // Render Kartu/Tabel untuk Setiap Barang
+  inventoryData.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'item-card';
 
-  addRowBtn.addEventListener('click', () => addRow());
-  resetBtn.addEventListener('click', () => {
-    inventoryRows.innerHTML = '';
-    addRow();
-    calculateTotals();
-  });
-
-  function addRow() {
-    const tr = document.createElement('tr');
-    
-    const itemOptions = inventoryData.map((item, idx) => 
-      `<option value="${idx}">${item.name}</option>`
-    ).join('');
-
-    tr.innerHTML = `
-      <td data-label="Nama Barang">
-        <select class="item-select">${itemOptions}</select>
-      </td>
-      <td data-label="Pilih Satuan">
-        <select class="unit-select"></select>
-      </td>
-      <td data-label="Jumlah">
-        <input type="number" class="qty-input" value="1" step="any" min="0">
-      </td>
-      <td data-label="Hasil Otomatis">
-        <span class="converted-result">0</span>
-      </td>
-      <td data-label="Aksi">
-        <button class="btn-delete" title="Hapus Baris">✕</button>
-      </td>
+    card.innerHTML = `
+      <div class="item-header">
+        <span class="item-title">${item.name}</span>
+        <span class="item-total-badge">0 ${item.baseUnit}</span>
+      </div>
+      <div class="rows-container"></div>
+      <button class="btn-add-row">+ Tambah Baris Input</button>
     `;
 
-    inventoryRows.appendChild(tr);
+    itemsContainer.appendChild(card);
 
-    const itemSelect = tr.querySelector('.item-select');
-    const unitSelect = tr.querySelector('.unit-select');
-    const qtyInput = tr.querySelector('.qty-input');
-    const deleteBtn = tr.querySelector('.btn-delete');
+    const rowsContainer = card.querySelector('.rows-container');
+    const addRowBtn = card.querySelector('.btn-add-row');
 
-    function updateUnits() {
-      const selectedItem = inventoryData[itemSelect.value];
-      unitSelect.innerHTML = Object.keys(selectedItem.conversions)
-        .map(unit => `<option value="${unit}">${unit}</option>`)
+    // Fungsi Tambah Baris di Barang Ini
+    function createRow() {
+      const row = document.createElement('div');
+      row.className = 'input-row';
+
+      const unitOptions = Object.keys(item.conversions)
+        .map(u => `<option value="${u}">${u}</option>`)
         .join('');
-      calculateRow(tr);
-    }
 
-    itemSelect.addEventListener('change', updateUnits);
-    unitSelect.addEventListener('change', () => calculateRow(tr));
-    qtyInput.addEventListener('input', () => calculateRow(tr));
-    deleteBtn.addEventListener('click', () => {
-      tr.remove();
-      calculateTotals();
-    });
-
-    updateUnits();
-  }
-
-  function calculateRow(tr) {
-    const itemSelect = tr.querySelector('.item-select');
-    const unitSelect = tr.querySelector('.unit-select');
-    const qtyInput = tr.querySelector('.qty-input');
-    const convertedSpan = tr.querySelector('.converted-result');
-
-    const item = inventoryData[itemSelect.value];
-    const unit = unitSelect.value;
-    const qty = parseFloat(qtyInput.value) || 0;
-
-    const multiplier = item.conversions[unit] || 1;
-    const rawTotal = qty * multiplier;
-
-    convertedSpan.textContent = `${formatDecimal(rawTotal)} ${item.baseUnit}`;
-    calculateTotals();
-  }
-
-  function calculateTotals() {
-    const totals = {};
-    const rows = inventoryRows.querySelectorAll('tr');
-
-    rows.forEach(tr => {
-      const itemSelect = tr.querySelector('.item-select');
-      const unitSelect = tr.querySelector('.unit-select');
-      const qtyInput = tr.querySelector('.qty-input');
-
-      if (!itemSelect || !unitSelect || !qtyInput) return;
-
-      const item = inventoryData[itemSelect.value];
-      const unit = unitSelect.value;
-      const qty = parseFloat(qtyInput.value) || 0;
-
-      if (qty > 0) {
-        const multiplier = item.conversions[unit] || 1;
-        const totalBase = qty * multiplier;
-
-        if (!totals[item.name]) {
-          totals[item.name] = { amount: 0, unit: item.baseUnit };
-        }
-        totals[item.name].amount += totalBase;
-      }
-    });
-
-    renderSummary(totals);
-  }
-
-  function renderSummary(totals) {
-    const summaryList = document.getElementById('summary-list');
-    const keys = Object.keys(totals);
-
-    if (keys.length === 0) {
-      summaryList.innerHTML = '<p class="empty-state">Belum ada barang yang dicatat.</p>';
-      return;
-    }
-
-    summaryList.innerHTML = keys.map(name => {
-      const item = totals[name];
-      return `
-        <div class="summary-card">
-          <div class="item-title">${name}</div>
-          <div class="item-val">${formatDecimal(item.amount)} ${item.unit}</div>
-        </div>
+      row.innerHTML = `
+        <input type="number" class="qty-input" value="0" step="any" min="0">
+        <select class="unit-select">${unitOptions}</select>
+        <span class="subtotal-text">0 ${item.baseUnit}</span>
+        <button class="btn-remove-row" title="Hapus">✕</button>
       `;
-    }).join('');
+
+      rowsContainer.appendChild(row);
+
+      const qtyInput = row.querySelector('.qty-input');
+      const unitSelect = row.querySelector('.unit-select');
+      const removeBtn = row.querySelector('.btn-remove-row');
+
+      qtyInput.addEventListener('input', () => updateCardTotal(card, item));
+      unitSelect.addEventListener('change', () => updateCardTotal(card, item));
+      
+      removeBtn.addEventListener('click', () => {
+        // Jangan hapus jika tersisa 1 baris
+        if (rowsContainer.children.length > 1) {
+          row.remove();
+          updateCardTotal(card, item);
+        } else {
+          qtyInput.value = 0;
+          updateCardTotal(card, item);
+        }
+      });
+
+      updateCardTotal(card, item);
+    }
+
+    addRowBtn.addEventListener('click', () => createRow());
+
+    // Buat 1 baris awal secara default
+    createRow();
+  });
+
+  // Fungsi Kalkulasi & Sum Total per Barang
+  function updateCardTotal(card, item) {
+    const rowsContainer = card.querySelector('.rows-container');
+    const badge = card.querySelector('.item-total-badge');
+    const rows = rowsContainer.querySelectorAll('.input-row');
+
+    let totalBaseUnit = 0;
+
+    rows.forEach(row => {
+      const qty = parseFloat(row.querySelector('.qty-input').value) || 0;
+      const unit = row.querySelector('.unit-select').value;
+      const multiplier = item.conversions[unit] || 1;
+      
+      const subtotal = qty * multiplier;
+      totalBaseUnit += subtotal;
+
+      // Update tampilan subtotal di baris tersebut
+      row.querySelector('.subtotal-text').textContent = `${formatNumber(subtotal)} ${item.baseUnit}`;
+    });
+
+    // Update Badge Total Akhir di Atas Card
+    badge.textContent = `${formatNumber(totalBaseUnit)} ${item.baseUnit}`;
   }
 
-  // Format angka desimal: dipotong 1 angka di belakang koma (contoh: 17.84692 menjadi 17,8)
-  function formatDecimal(val) {
+  // Format angka: jika ada koma (misal 17.84692) dipotong jadi 1 digit desimal (17,8)
+  function formatNumber(val) {
     if (Number.isInteger(val)) return val.toString();
     const truncated = Math.floor(val * 10) / 10;
     return truncated.toString().replace('.', ',');
