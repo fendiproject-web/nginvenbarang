@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pencatatan Sisa Barang Gudang</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <h1>📦 Pencatatan Sisa Gudang</h1>
+      <p>Kalkulasi otomatis sisa stok berdasarkan konversi satuan gudang</p>
+    </header>
+
+    <main class="main-content">
+      <!-- Form Input Dynamic Table -->
+      <section class="card input-section">
+        <div class="card-header">
+          <h2>Input Sisa Barang</h2>
+          <button id="add-row-btn" class="btn btn-primary">+ Tambah Baris</button>
+        </div>
+        
+        <div class="table-wrapper">
+          <table id="inventory-table">
+            <thead>
+              <tr>
+                <th>Nama Barang</th>
+                <th>Satuan</th>
+                <th>Jumlah</th>
+                <th>Hasil Konversi</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="inventory-rows">
+              <!-- Baris dinamis akan ditambahkan lewat JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Ringkasan Hasil Kalkulasi -->
+      <section class="card summary-section">
+        <div class="card-header">
+          <h2>📊 Total Ringkasan Stok</h2>
+          <button id="reset-btn" class="btn btn-danger-outline">Reset Semua</button>
+        </div>
+        <div id="summary-list" class="summary-grid">
+          <p class="empty-state">Belum ada barang yang dicatat.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
