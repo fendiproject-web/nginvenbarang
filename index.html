@@ -3,21 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pencatatan Gudang - Fresh UI</title>
+  <title>Pencatatan Gudang - Glassmorphism Premium</title>
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
+  <!-- Atmospheric Ambient Glows -->
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+  <div class="ambient-glow glow-3"></div>
 
   <div class="app-container">
     <header class="app-header">
-      <div class="header-badge">Sistem Inventaris Gudang</div>
-      <h1>📦 Pencatatan Sisa Barang</h1>
-      <p>Pilih satuan dari konversi gudang atau gunakan input manual. Perhitungan otomatis secara instant.</p>
+      <div class="header-tag">Gudang & Inventaris</div>
+      <h1>📦 Pencatatan Sisa Gudang</h1>
+      <p>Hitung otomatis jumlah pcs/satuan dasar saat memilih unit, atau gunakan input manual.</p>
     </header>
 
-    <!-- Grid Kartu Setiap Barang -->
-    <main id="items-container" class="items-grid"></main>
+    <main id="inventory-grid" class="inventory-grid"></main>
   </div>
 
   <script src="script.js"></script>
