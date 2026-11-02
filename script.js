@@ -29,7 +29,7 @@ const inventoryData = [
   { name: "HAND GLOVE", baseUnit: "PCS", conversions: { "PACK": 100, "PCS": 1 } }
 ];
 
-// SVG Icons
+// SVG Icons Modern
 const ICON_REFRESH = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>`;
 const ICON_PLUS = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>`;
 const ICON_TRASH = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>`;
@@ -63,12 +63,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const addRowBtn = card.querySelector('.btn-add-row');
     const resetCardBtn = card.querySelector('.btn-reset-card');
 
-    function createRow() {
+    function createRow(defaultQty = 1) {
       const row = document.createElement('div');
       row.className = 'input-row';
 
-      // Tampilkan jumlah konversi dengan jelas di tiap pilihan dropdown
-      // Contoh: PACK (10 PCS), DUS (750 PCS), ZAK (25000 GR)
       const standardUnits = Object.keys(item.conversions);
       let optionsHtml = standardUnits
         .map(u => {
@@ -77,11 +75,11 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .join('');
 
-      // Selalu ada opsi "Masukkan Jumlah Manual"
       optionsHtml += `<option value="MANUAL">Masukkan Jumlah Manual (${item.baseUnit})</option>`;
 
+      // Default value diisi 1 agar langsung mengalkulasi saat terpilih
       row.innerHTML = `
-        <input type="number" class="qty-input" value="0" step="any" min="0" placeholder="0">
+        <input type="number" class="qty-input" value="${defaultQty}" step="any" min="0" placeholder="1">
         <select class="unit-select">${optionsHtml}</select>
         <span class="row-subtotal">0 ${item.baseUnit}</span>
         <button class="btn-remove-row" title="Hapus Baris">${ICON_TRASH}</button>
@@ -93,8 +91,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const unitSelect = row.querySelector('.unit-select');
       const removeBtn = row.querySelector('.btn-remove-row');
 
+      // Saat mengetik / mengganti unit, otomatis hitung ulang
       qtyInput.addEventListener('input', () => updateCardTotal(card, item));
-      unitSelect.addEventListener('change', () => updateCardTotal(card, item));
+      unitSelect.addEventListener('change', () => {
+        // Jika angka 0 saat ganti opsi, otomatis diisikan 1 agar hasil tidak 0
+        if (!qtyInput.value || parseFloat(qtyInput.value) === 0) {
+          qtyInput.value = 1;
+        }
+        updateCardTotal(card, item);
+      });
 
       removeBtn.addEventListener('click', () => {
         if (rowsContainer.children.length > 1) {
@@ -108,16 +113,16 @@ document.addEventListener('DOMContentLoaded', () => {
       updateCardTotal(card, item);
     }
 
-    // Tombol Reset untuk setiap tabel/kartu barang
+    // Reset khusus kartu ini (kembali ke 1 baris nilai 0)
     resetCardBtn.addEventListener('click', () => {
       rowsContainer.innerHTML = '';
-      createRow();
+      createRow(0);
     });
 
-    addRowBtn.addEventListener('click', () => createRow());
+    addRowBtn.addEventListener('click', () => createRow(1));
     
     // Baris default awal
-    createRow();
+    createRow(0);
   });
 
   // Kalkulasi Penjumlahan Otomatis Per Kartu Barang
@@ -148,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
     badge.textContent = `${formatNumber(totalBase)} ${item.baseUnit}`;
   }
 
-  // Format desimal: memotong 1 digit di belakang koma (misal 17.84692 -> 17,8)
+  // Format desimal: memotong 1 digit di belakang koma (contoh: 17.84692 -> 17,8)
   function formatNumber(val) {
     if (Number.isInteger(val)) return val.toString();
     const truncated = Math.floor(val * 10) / 10;
