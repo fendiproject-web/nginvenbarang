@@ -1,4 +1,4 @@
-// Database konversi barang gudang
+// Database konversi barang gudang persis sesuai gambar tabel
 const inventoryData = [
   { name: "AYAM BESAR CUT 9", baseUnit: "PCS", conversions: { "PACK": 10, "PCS": 1 } },
   { name: "AYAM KECIL CUT 9", baseUnit: "PCS", conversions: { "PACK": 8, "PCS": 1 } },
@@ -30,46 +30,44 @@ const inventoryData = [
 ];
 
 document.addEventListener('DOMContentLoaded', () => {
-  const itemsContainer = document.getElementById('items-container');
+  const inventoryGrid = document.getElementById('inventory-grid');
 
-  // Loop setiap barang dari data gudang
   inventoryData.forEach(item => {
     const card = document.createElement('div');
-    card.className = 'item-card';
+    card.className = 'glass-card';
 
     card.innerHTML = `
-      <div class="item-header">
-        <span class="item-title">${item.name}</span>
-        <span class="item-total-badge">0 ${item.baseUnit}</span>
+      <div class="card-header">
+        <span class="card-title">${item.name}</span>
+        <span class="card-total-badge">0 ${item.baseUnit}</span>
       </div>
       <div class="rows-container"></div>
-      <button class="btn-add-row">+ Tambah Input Baris</button>
+      <button class="btn-add-row">+ Tambah Baris Input</button>
     `;
 
-    itemsContainer.appendChild(card);
+    inventoryGrid.appendChild(card);
 
     const rowsContainer = card.querySelector('.rows-container');
     const addRowBtn = card.querySelector('.btn-add-row');
 
-    // Fungsi Tambah Baris Input
     function createRow() {
       const row = document.createElement('div');
       row.className = 'input-row';
 
-      // Gabungkan satuan konversi + Opsi "Masukkan Jumlah Manual"
+      // Satuan bawaan tabel gudang
       const standardUnits = Object.keys(item.conversions);
-      let unitOptionsHtml = standardUnits
+      let optionsHtml = standardUnits
         .map(u => `<option value="${u}">${u}</option>`)
         .join('');
 
-      // Tambahkan pilihan manual di paling bawah dropdown
-      unitOptionsHtml += `<option value="MANUAL">Masukkan Jumlah Manual (${item.baseUnit})</option>`;
+      // Selalu ada opsi "Masukkan Jumlah Manual" di dropdown
+      optionsHtml += `<option value="MANUAL">Masukkan Jumlah Manual</option>`;
 
       row.innerHTML = `
-        <input type="number" class="qty-input" value="0" step="any" min="0" placeholder="0">
-        <select class="unit-select">${unitOptionsHtml}</select>
-        <span class="subtotal-text">0 ${item.baseUnit}</span>
-        <button class="btn-remove-row" title="Hapus">✕</button>
+        <input type="number" class="qty-input" value="1" step="any" min="0" placeholder="0">
+        <select class="unit-select">${optionsHtml}</select>
+        <span class="row-subtotal">0 ${item.baseUnit}</span>
+        <button class="btn-remove-row" title="Hapus Baris">✕</button>
       `;
 
       rowsContainer.appendChild(row);
@@ -78,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const unitSelect = row.querySelector('.unit-select');
       const removeBtn = row.querySelector('.btn-remove-row');
 
-      // Event listener otomatis hitung saat diketik / ganti dropdown
+      // Hitung otomatis saat mengetik jumlah / mengganti opsi dropdown
       qtyInput.addEventListener('input', () => updateCardTotal(card, item));
       unitSelect.addEventListener('change', () => updateCardTotal(card, item));
 
@@ -95,18 +93,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     addRowBtn.addEventListener('click', () => createRow());
-
-    // Buat 1 baris input pertama secara default
+    
+    // Baris default awal
     createRow();
   });
 
-  // Hitung penjumlahan otomatis total per barang
+  // Fungsi Kalkulasi Penjumlahan Otomatis Per Kartu Barang
   function updateCardTotal(card, item) {
     const rowsContainer = card.querySelector('.rows-container');
-    const badge = card.querySelector('.item-total-badge');
+    const badge = card.querySelector('.card-total-badge');
     const rows = rowsContainer.querySelectorAll('.input-row');
 
-    let totalBaseUnit = 0;
+    let totalBase = 0;
 
     rows.forEach(row => {
       const qty = parseFloat(row.querySelector('.qty-input').value) || 0;
@@ -115,22 +113,25 @@ document.addEventListener('DOMContentLoaded', () => {
       let subtotal = 0;
 
       if (selectedUnit === "MANUAL") {
-        // Jika pilih manual, jumlah langsung dihitung sebagai baseUnit (1 banding 1)
+        // Jika pilih Manual -> Jumlah langsung dipakai tanpa perkalian konversi
         subtotal = qty;
       } else {
+        // Jika memilih unit (misal PACK) -> otomatis dikalikan konversi pcs/dasarnya
         const multiplier = item.conversions[selectedUnit] || 1;
         subtotal = qty * multiplier;
       }
 
-      totalBaseUnit += subtotal;
-      row.querySelector('.subtotal-text').textContent = `${formatNumber(subtotal)} ${item.baseUnit}`;
+      totalBase += subtotal;
+      
+      // Update subtotal per baris
+      row.querySelector('.row-subtotal').textContent = `${formatNumber(subtotal)} ${item.baseUnit}`;
     });
 
-    // Update total badge di pojok atas kartu
-    badge.textContent = `${formatNumber(totalBaseUnit)} ${item.baseUnit}`;
+    // Update total badge gabungan seluruh baris untuk barang ini
+    badge.textContent = `${formatNumber(totalBase)} ${item.baseUnit}`;
   }
 
-  // Format desimal: memotong 1 angka di belakang koma (misal 17.84692 -> 17,8)
+  // Format desimal: memotong 1 digit di belakang koma jika berantai desimal (contoh: 17.84692 -> 17,8)
   function formatNumber(val) {
     if (Number.isInteger(val)) return val.toString();
     const truncated = Math.floor(val * 10) / 10;
