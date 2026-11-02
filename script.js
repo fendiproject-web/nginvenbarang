@@ -1,4 +1,4 @@
-// Database konversi barang gudang persis sesuai tabel gambar
+// Database konversi barang gudang persis sesuai tabel gambar & penambahan opsi khusus Chili Sachet
 const inventoryData = [
   { name: "AYAM BESAR CUT 9", baseUnit: "PCS", conversions: { "PACK": 10, "PCS": 1 } },
   { name: "AYAM KECIL CUT 9", baseUnit: "PCS", conversions: { "PACK": 8, "PCS": 1 } },
@@ -6,7 +6,17 @@ const inventoryData = [
   { name: "BERAS", baseUnit: "GR", conversions: { "ZAK": 25000, "PORSI": 90, "GR": 1 } },
   { name: "TEPUNG BREADER", baseUnit: "GR", conversions: { "DUS": 25000, "PACK": 12500, "GR": 1 } },
   { name: "SAMBAL", baseUnit: "GR", conversions: { "PACK": 1000, "PORSI": 25, "GR": 1 } },
-  { name: "CHILLI SACHET", baseUnit: "PCS", conversions: { "DUS": 750, "PACK": 25, "PCS": 1 } },
+  { 
+    name: "CHILLI SACHET", 
+    baseUnit: "PCS", 
+    conversions: { 
+      "DUS (30 PACK / 750 PCS)": 750, 
+      "DUS (21 PACK / 462 PCS)": 462, 
+      "PACK (25 PCS)": 25, 
+      "PACK (22 PCS)": 22, 
+      "PCS": 1 
+    } 
+  },
   { name: "TOMAT SACHET", baseUnit: "PCS", conversions: { "DUS": 750, "PACK": 25, "PCS": 1 } },
   { name: "AIR MINERAL (PRIMA)", baseUnit: "BTL", conversions: { "DUS": 24, "BTL": 1 } },
   { name: "SAOS GANGNAM", baseUnit: "GR", conversions: { "PACK": 1000, "PORSI": 40, "GR": 1 } },
@@ -29,17 +39,21 @@ const inventoryData = [
   { name: "HAND GLOVE", baseUnit: "PCS", conversions: { "PACK": 100, "PCS": 1 } }
 ];
 
-// SVG Icons
-const ICON_REFRESH = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>`;
-const ICON_PLUS = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>`;
-const ICON_TRASH = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>`;
+// SVG Icons Modern
+const ICON_REFRESH = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>`;
+const ICON_PLUS = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>`;
+const ICON_TRASH = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>`;
 
 document.addEventListener('DOMContentLoaded', () => {
   const inventoryGrid = document.getElementById('inventory-grid');
+  const summaryTextarea = document.getElementById('summary-text');
+  const btnCopy = document.getElementById('btn-copy');
+  const copyTextBtn = document.getElementById('copy-text-btn');
 
-  inventoryData.forEach(item => {
+  inventoryData.forEach((item, index) => {
     const card = document.createElement('div');
     card.className = 'neu-card';
+    card.dataset.itemIndex = index;
 
     card.innerHTML = `
       <div class="card-header">
@@ -90,12 +104,17 @@ document.addEventListener('DOMContentLoaded', () => {
       const unitSelect = row.querySelector('.unit-select');
       const removeBtn = row.querySelector('.btn-remove-row');
 
-      qtyInput.addEventListener('input', () => updateCardTotal(card, item));
+      qtyInput.addEventListener('input', () => {
+        updateCardTotal(card, item);
+        generateSummaryNotes();
+      });
+
       unitSelect.addEventListener('change', () => {
         if (!qtyInput.value || parseFloat(qtyInput.value) === 0) {
           qtyInput.value = 1;
         }
         updateCardTotal(card, item);
+        generateSummaryNotes();
       });
 
       removeBtn.addEventListener('click', () => {
@@ -105,24 +124,27 @@ document.addEventListener('DOMContentLoaded', () => {
           qtyInput.value = 0;
         }
         updateCardTotal(card, item);
+        generateSummaryNotes();
       });
 
       updateCardTotal(card, item);
     }
 
-    // Reset tabel/kartu ini
     resetCardBtn.addEventListener('click', () => {
       rowsContainer.innerHTML = '';
       createRow(0);
+      generateSummaryNotes();
     });
 
-    addRowBtn.addEventListener('click', () => createRow(1));
+    addRowBtn.addEventListener('click', () => {
+      createRow(1);
+      generateSummaryNotes();
+    });
 
-    // Awal baris default
-    createRow(1);
+    createRow(0);
   });
 
-  // Hitung penjumlahan otomatis
+  // Hitung total per kartu
   function updateCardTotal(card, item) {
     const rowsContainer = card.querySelector('.rows-container');
     const badge = card.querySelector('.card-total-badge');
@@ -148,12 +170,60 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     badge.textContent = `${formatNumber(totalBase)} ${item.baseUnit}`;
+    card.dataset.totalVal = totalBase;
   }
 
-  // Format desimal: dipotong 1 digit di belakang koma (misal 17.84692 -> 17,8)
+  // Buat Catatan Laporan Sisa Stok Otomatis
+  function generateSummaryNotes() {
+    const cards = document.querySelectorAll('.neu-card[data-item-index]');
+    let lines = ["--- CATATAN SISA STOK GUDANG ---"];
+    let hasData = false;
+
+    cards.forEach((card, idx) => {
+      const item = inventoryData[idx];
+      const totalVal = parseFloat(card.dataset.totalVal) || 0;
+
+      if (totalVal > 0) {
+        hasData = true;
+        lines.push(`• ${item.name}: ${formatNumber(totalVal)} ${item.baseUnit}`);
+      }
+    });
+
+    if (!hasData) {
+      summaryTextarea.value = "Belum ada sisa stok barang yang diisi.";
+    } else {
+      summaryTextarea.value = lines.join("\n");
+    }
+  }
+
+  // Fitur Salin Teks ke Clipboard
+  btnCopy.addEventListener('click', () => {
+    if (!summaryTextarea.value || summaryTextarea.value.startsWith("Belum ada")) return;
+
+    navigator.clipboard.writeText(summaryTextarea.value).then(() => {
+      copyTextBtn.textContent = "Tersalin!";
+      btnCopy.style.color = "#10b981";
+
+      setTimeout(() => {
+        copyTextBtn.textContent = "Salin Catatan";
+        btnCopy.style.color = "";
+      }, 2000);
+    }).catch(() => {
+      summaryTextarea.select();
+      document.execCommand('copy');
+      copyTextBtn.textContent = "Tersalin!";
+      setTimeout(() => {
+        copyTextBtn.textContent = "Salin Catatan";
+      }, 2000);
+    });
+  });
+
+  // Format desimal: potong 1 digit di belakang koma (contoh: 17.84692 -> 17,8)
   function formatNumber(val) {
     if (Number.isInteger(val)) return val.toString();
     const truncated = Math.floor(val * 10) / 10;
     return truncated.toString().replace('.', ',');
   }
+
+  generateSummaryNotes();
 });
