@@ -1,20 +1,20 @@
 :root {
-  --bg-color: #eef2f7;
-  --text-main: #1e293b;
-  --text-muted: #64748b;
+  --bg-color: #e0e5ec;
+  --text-main: #2d3748;
+  --text-muted: #718096;
   
-  --accent-blue: #2563eb;
-  --accent-blue-hover: #1d4ed8;
-  --accent-green: #10b981;
-  --accent-orange: #f97316;
-  --accent-red: #ef4444;
+  --accent-blue: #3182ce;
+  --accent-blue-hover: #2b6cb0;
+  --accent-green: #2f855a;
+  --accent-orange: #dd6b20;
+  --accent-red: #e53e3e;
 
-  /* Neumorphism Light Shadows */
-  --neu-shadow-flat: 9px 9px 18px #c5cbcf, -9px -9px 18px #ffffff;
-  --neu-shadow-hover: 12px 12px 24px #bebec3, -12px -12px 24px #ffffff;
-  --neu-shadow-inset: inset 3px 3px 6px #c5cbcf, inset -3px -3px 6px #ffffff;
-  --neu-shadow-btn: 5px 5px 10px #c5cbcf, -5px -5px 10px #ffffff;
-  --neu-shadow-btn-pressed: inset 2px 2px 5px #c5cbcf, inset -2px -2px 5px #ffffff;
+  /* Presisi Bayangan Neumorphism Light Mode */
+  --neu-shadow-flat: 8px 8px 16px #a3b1c6, -8px -8px 16px #ffffff;
+  --neu-shadow-hover: 12px 12px 20px #98a7bd, -12px -12px 20px #ffffff;
+  --neu-shadow-inset: inset 3px 3px 6px #b8c5d6, inset -3px -3px 6px #ffffff;
+  --neu-shadow-btn: 5px 5px 10px #a3b1c6, -5px -5px 10px #ffffff;
+  --neu-shadow-btn-pressed: inset 2px 2px 5px #a3b1c6, inset -2px -2px 5px #ffffff;
 }
 
 * {
@@ -32,7 +32,7 @@ body {
 }
 
 .app-container {
-  max-width: 1280px;
+  max-width: 1320px;
   margin: 0 auto;
 }
 
@@ -47,7 +47,7 @@ body {
   gap: 8px;
   background: var(--bg-color);
   color: var(--accent-blue);
-  padding: 8px 18px;
+  padding: 8px 20px;
   border-radius: 30px;
   font-size: 0.8rem;
   font-weight: 800;
@@ -60,7 +60,7 @@ body {
 .app-header h1 {
   font-size: 2.2rem;
   font-weight: 800;
-  color: #0f172a;
+  color: #1a202c;
   letter-spacing: -0.5px;
 }
 
@@ -70,17 +70,17 @@ body {
   margin-top: 6px;
 }
 
-/* Grid Layout Cards */
+/* Responsive Grid Kartu */
 .inventory-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-  gap: 26px;
+  grid-template-columns: repeat(auto-fill, minmax(390px, 1fr));
+  gap: 28px;
 }
 
-/* Neumorphic Card Component */
+/* Card Component Neumorphism */
 .neu-card {
   background: var(--bg-color);
-  border-radius: 24px;
+  border-radius: 20px;
   padding: 22px;
   box-shadow: var(--neu-shadow-flat);
   display: flex;
@@ -96,15 +96,15 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
   padding-bottom: 12px;
-  border-bottom: 2px solid rgba(203, 213, 225, 0.4);
+  border-bottom: 2px solid rgba(163, 177, 198, 0.3);
 }
 
 .card-title {
   font-size: 0.95rem;
   font-weight: 800;
-  color: #0f172a;
+  color: #1a202c;
   text-transform: uppercase;
 }
 
@@ -155,14 +155,15 @@ body {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 
+/* CSS Grid untuk kerapian layout per-baris */
 .input-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: 70px 1fr 75px 34px;
+  gap: 10px;
   align-items: center;
-  gap: 8px;
-  padding: 4px;
 }
 
 /* Neumorphic Input & Select */
@@ -170,23 +171,21 @@ input[type="number"], select {
   background: var(--bg-color);
   box-shadow: var(--neu-shadow-inset);
   border: none;
-  border-radius: 12px;
+  border-radius: 10px;
   color: var(--text-main);
   padding: 10px 12px;
   font-size: 0.85rem;
   font-weight: 600;
   outline: none;
+  width: 100%;
   transition: all 0.2s ease;
 }
 
-input[type="number"] {
-  width: 75px;
-}
-
 select {
-  flex: 1;
   cursor: pointer;
   text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 input[type="number"]:focus, select:focus {
@@ -197,9 +196,10 @@ input[type="number"]:focus, select:focus {
   font-size: 0.85rem;
   font-weight: 700;
   color: var(--accent-blue);
-  min-width: 65px;
   text-align: right;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Buttons */
@@ -208,8 +208,8 @@ input[type="number"]:focus, select:focus {
   color: var(--accent-blue);
   box-shadow: var(--neu-shadow-btn);
   border: none;
-  padding: 10px;
-  border-radius: 14px;
+  padding: 12px;
+  border-radius: 12px;
   font-weight: 700;
   font-size: 0.85rem;
   cursor: pointer;
@@ -243,7 +243,6 @@ input[type="number"]:focus, select:focus {
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
-  flex-shrink: 0;
 }
 
 .btn-remove-row:hover {
@@ -257,5 +256,9 @@ input[type="number"]:focus, select:focus {
 @media (max-width: 480px) {
   .inventory-grid {
     grid-template-columns: 1fr;
+  }
+  .input-row {
+    grid-template-columns: 60px 1fr 65px 30px;
+    gap: 6px;
   }
 }
