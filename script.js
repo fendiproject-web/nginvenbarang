@@ -1,4 +1,4 @@
-// Database konversi barang gudang persis sesuai gambar tabel
+// Database konversi barang gudang persis sesuai tabel gambar
 const inventoryData = [
   { name: "AYAM BESAR CUT 9", baseUnit: "PCS", conversions: { "PACK": 10, "PCS": 1 } },
   { name: "AYAM KECIL CUT 9", baseUnit: "PCS", conversions: { "PACK": 8, "PCS": 1 } },
@@ -29,7 +29,7 @@ const inventoryData = [
   { name: "HAND GLOVE", baseUnit: "PCS", conversions: { "PACK": 100, "PCS": 1 } }
 ];
 
-// SVG Icons Modern
+// SVG Icons
 const ICON_REFRESH = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>`;
 const ICON_PLUS = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>`;
 const ICON_TRASH = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>`;
@@ -77,7 +77,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       optionsHtml += `<option value="MANUAL">Masukkan Jumlah Manual (${item.baseUnit})</option>`;
 
-      // Default value diisi 1 agar langsung mengalkulasi saat terpilih
       row.innerHTML = `
         <input type="number" class="qty-input" value="${defaultQty}" step="any" min="0" placeholder="1">
         <select class="unit-select">${optionsHtml}</select>
@@ -91,10 +90,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const unitSelect = row.querySelector('.unit-select');
       const removeBtn = row.querySelector('.btn-remove-row');
 
-      // Saat mengetik / mengganti unit, otomatis hitung ulang
       qtyInput.addEventListener('input', () => updateCardTotal(card, item));
       unitSelect.addEventListener('change', () => {
-        // Jika angka 0 saat ganti opsi, otomatis diisikan 1 agar hasil tidak 0
         if (!qtyInput.value || parseFloat(qtyInput.value) === 0) {
           qtyInput.value = 1;
         }
@@ -113,19 +110,19 @@ document.addEventListener('DOMContentLoaded', () => {
       updateCardTotal(card, item);
     }
 
-    // Reset khusus kartu ini (kembali ke 1 baris nilai 0)
+    // Reset tabel/kartu ini
     resetCardBtn.addEventListener('click', () => {
       rowsContainer.innerHTML = '';
       createRow(0);
     });
 
     addRowBtn.addEventListener('click', () => createRow(1));
-    
-    // Baris default awal
-    createRow(0);
+
+    // Awal baris default
+    createRow(1);
   });
 
-  // Kalkulasi Penjumlahan Otomatis Per Kartu Barang
+  // Hitung penjumlahan otomatis
   function updateCardTotal(card, item) {
     const rowsContainer = card.querySelector('.rows-container');
     const badge = card.querySelector('.card-total-badge');
@@ -136,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
     rows.forEach(row => {
       const qty = parseFloat(row.querySelector('.qty-input').value) || 0;
       const selectedUnit = row.querySelector('.unit-select').value;
-      
+
       let subtotal = 0;
 
       if (selectedUnit === "MANUAL") {
@@ -153,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
     badge.textContent = `${formatNumber(totalBase)} ${item.baseUnit}`;
   }
 
-  // Format desimal: memotong 1 digit di belakang koma (contoh: 17.84692 -> 17,8)
+  // Format desimal: dipotong 1 digit di belakang koma (misal 17.84692 -> 17,8)
   function formatNumber(val) {
     if (Number.isInteger(val)) return val.toString();
     const truncated = Math.floor(val * 10) / 10;
