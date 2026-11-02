@@ -13,7 +13,6 @@
   --neu-shadow-flat: 6px 6px 12px #a3b1c6, -6px -6px 12px #ffffff;
   --neu-shadow-hover: 9px 9px 16px #98a7bd, -9px -9px 16px #ffffff;
   --neu-shadow-inset: inset 2px 2px 5px #b8c5d6, inset -2px -2px 5px #ffffff;
-  --neu-shadow-inset-lg: inset 3px 3px 8px #b8c5d6, inset -3px -3px 8px #ffffff;
   --neu-shadow-btn: 4px 4px 8px #a3b1c6, -4px -4px 8px #ffffff;
   --neu-shadow-btn-pressed: inset 2px 2px 4px #a3b1c6, inset -2px -2px 4px #ffffff;
 }
@@ -76,10 +75,9 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
   gap: 16px;
-  margin-bottom: 24px;
 }
 
-/* Neumorphic Card Small */
+/* Neumorphic Card Component */
 .neu-card {
   background: var(--bg-color);
   border-radius: 16px;
@@ -250,110 +248,6 @@ input[type="number"]:focus, select:focus {
   box-shadow: var(--neu-shadow-btn-pressed);
 }
 
-/* Desain Premium Neumorphism untuk Section Catatan di Bawah */
-.neu-card-lg {
-  background: var(--bg-color);
-  border-radius: 20px;
-  padding: 22px;
-  box-shadow: var(--neu-shadow-flat);
-}
-
-.copy-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-  gap: 12px;
-}
-
-.copy-title-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.copy-icon-box {
-  background: var(--bg-color);
-  color: var(--accent-blue);
-  box-shadow: var(--neu-shadow-btn);
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.copy-title-wrapper h2 {
-  font-size: 1.05rem;
-  font-weight: 800;
-  color: #1a202c;
-  line-height: 1.2;
-}
-
-.copy-subtitle {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  margin-top: 2px;
-}
-
-.btn-copy {
-  background: var(--bg-color);
-  color: var(--accent-blue);
-  box-shadow: var(--neu-shadow-btn);
-  border: none;
-  padding: 10px 18px;
-  border-radius: 12px;
-  font-size: 0.82rem;
-  font-weight: 800;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-}
-
-.btn-copy:hover {
-  color: var(--accent-blue-hover);
-}
-
-.btn-copy:active {
-  box-shadow: var(--neu-shadow-btn-pressed);
-}
-
-.textarea-wrapper {
-  position: relative;
-  border-radius: 14px;
-}
-
-textarea#summary-text {
-  width: 100%;
-  height: 160px;
-  background: var(--bg-color);
-  box-shadow: var(--neu-shadow-inset-lg);
-  border: none;
-  border-radius: 14px;
-  padding: 14px 16px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  font-family: 'Plus Jakarta Sans', monospace, sans-serif;
-  color: #1e293b;
-  resize: vertical;
-  outline: none;
-  line-height: 1.6;
-}
-
-textarea#summary-text::-webkit-scrollbar {
-  width: 6px;
-}
-
-textarea#summary-text::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 10px;
-}
-
 @media (max-width: 640px) {
   .inventory-grid {
     grid-template-columns: 1fr;
@@ -361,13 +255,5 @@ textarea#summary-text::-webkit-scrollbar-thumb {
   .input-row {
     grid-template-columns: 50px 1fr 58px 26px;
     gap: 4px;
-  }
-  .copy-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .btn-copy {
-    width: 100%;
-    justify-content: center;
   }
 }
