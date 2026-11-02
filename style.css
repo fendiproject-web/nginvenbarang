@@ -1,16 +1,16 @@
 :root {
   --bg-color: #eef2f7;
-  --text-main: #2d3748;
-  --text-muted: #718096;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
   
-  --accent-blue: #3182ce;
-  --accent-blue-hover: #2b6cb0;
-  --accent-orange: #dd6b20;
-  --accent-green: #38a169;
-  --accent-red: #e53e3e;
+  --accent-blue: #2563eb;
+  --accent-blue-hover: #1d4ed8;
+  --accent-green: #10b981;
+  --accent-orange: #f97316;
+  --accent-red: #ef4444;
 
-  /* Neumorphism Light Mode Shadows */
-  --neu-shadow-flat: 8px 8px 16px #c5cbcf, -8px -8px 16px #ffffff;
+  /* Neumorphism Light Shadow System */
+  --neu-shadow-flat: 9px 9px 18px #c5cbcf, -9px -9px 18px #ffffff;
   --neu-shadow-hover: 12px 12px 24px #bebec3, -12px -12px 24px #ffffff;
   --neu-shadow-inset: inset 3px 3px 6px #c5cbcf, inset -3px -3px 6px #ffffff;
   --neu-shadow-btn: 5px 5px 10px #c5cbcf, -5px -5px 10px #ffffff;
@@ -32,7 +32,7 @@ body {
 }
 
 .app-container {
-  max-width: 1240px;
+  max-width: 1280px;
   margin: 0 auto;
 }
 
@@ -42,14 +42,16 @@ body {
 }
 
 .header-badge {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   background: var(--bg-color);
   color: var(--accent-blue);
-  padding: 6px 18px;
+  padding: 8px 18px;
   border-radius: 30px;
   font-size: 0.8rem;
   font-weight: 800;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.6px;
   text-transform: uppercase;
   box-shadow: var(--neu-shadow-btn);
   margin-bottom: 14px;
@@ -58,7 +60,7 @@ body {
 .app-header h1 {
   font-size: 2.2rem;
   font-weight: 800;
-  color: #1a202c;
+  color: #0f172a;
   letter-spacing: -0.5px;
 }
 
@@ -71,7 +73,7 @@ body {
 /* Grid Layout */
 .inventory-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
   gap: 26px;
 }
 
@@ -102,7 +104,7 @@ body {
 .card-title {
   font-size: 0.95rem;
   font-weight: 800;
-  color: #1a202c;
+  color: #0f172a;
   text-transform: uppercase;
 }
 
@@ -116,7 +118,7 @@ body {
   background: var(--bg-color);
   color: var(--accent-green);
   box-shadow: var(--neu-shadow-btn);
-  padding: 6px 12px;
+  padding: 6px 14px;
   border-radius: 12px;
   font-size: 0.9rem;
   font-weight: 800;
@@ -129,11 +131,14 @@ body {
   color: var(--accent-orange);
   box-shadow: var(--neu-shadow-btn);
   border: none;
-  padding: 6px 10px;
+  padding: 6px 12px;
   border-radius: 12px;
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   font-weight: 700;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   transition: all 0.2s ease;
 }
 
@@ -157,31 +162,31 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 6px;
-  border-radius: 14px;
+  padding: 4px;
 }
 
-/* Neumorphic Input & Select (Inset Shadow) */
+/* Neumorphic Input & Select */
 input[type="number"], select {
   background: var(--bg-color);
   box-shadow: var(--neu-shadow-inset);
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   color: var(--text-main);
   padding: 10px 12px;
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   font-weight: 600;
   outline: none;
   transition: all 0.2s ease;
 }
 
 input[type="number"] {
-  width: 80px;
+  width: 75px;
 }
 
 select {
   flex: 1;
   cursor: pointer;
+  text-overflow: ellipsis;
 }
 
 input[type="number"]:focus, select:focus {
@@ -208,6 +213,10 @@ input[type="number"]:focus, select:focus {
   font-weight: 700;
   font-size: 0.85rem;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   transition: all 0.2s ease;
   width: 100%;
   margin-top: auto;
@@ -227,18 +236,18 @@ input[type="number"]:focus, select:focus {
   box-shadow: var(--neu-shadow-btn);
   border: none;
   border-radius: 10px;
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   cursor: pointer;
-  font-weight: 800;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
 .btn-remove-row:hover {
-  background: #fff0f0;
+  color: #dc2626;
 }
 
 .btn-remove-row:active {
