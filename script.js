@@ -1,4 +1,4 @@
-// Database lengkap konversi barang gudang
+// Database konversi barang gudang
 const inventoryData = [
   { name: "AYAM BESAR CUT 9", baseUnit: "PCS", conversions: { "PACK": 10, "PCS": 1 } },
   { name: "AYAM KECIL CUT 9", baseUnit: "PCS", conversions: { "PACK": 8, "PCS": 1 } },
@@ -32,7 +32,7 @@ const inventoryData = [
 document.addEventListener('DOMContentLoaded', () => {
   const itemsContainer = document.getElementById('items-container');
 
-  // Render Kartu/Tabel untuk Setiap Barang
+  // Loop setiap barang dari data gudang
   inventoryData.forEach(item => {
     const card = document.createElement('div');
     card.className = 'item-card';
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <span class="item-total-badge">0 ${item.baseUnit}</span>
       </div>
       <div class="rows-container"></div>
-      <button class="btn-add-row">+ Tambah Baris Input</button>
+      <button class="btn-add-row">+ Tambah Input Baris</button>
     `;
 
     itemsContainer.appendChild(card);
@@ -51,18 +51,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const rowsContainer = card.querySelector('.rows-container');
     const addRowBtn = card.querySelector('.btn-add-row');
 
-    // Fungsi Tambah Baris di Barang Ini
+    // Fungsi Tambah Baris Input
     function createRow() {
       const row = document.createElement('div');
       row.className = 'input-row';
 
-      const unitOptions = Object.keys(item.conversions)
+      // Gabungkan satuan konversi + Opsi "Masukkan Jumlah Manual"
+      const standardUnits = Object.keys(item.conversions);
+      let unitOptionsHtml = standardUnits
         .map(u => `<option value="${u}">${u}</option>`)
         .join('');
 
+      // Tambahkan pilihan manual di paling bawah dropdown
+      unitOptionsHtml += `<option value="MANUAL">Masukkan Jumlah Manual (${item.baseUnit})</option>`;
+
       row.innerHTML = `
-        <input type="number" class="qty-input" value="0" step="any" min="0">
-        <select class="unit-select">${unitOptions}</select>
+        <input type="number" class="qty-input" value="0" step="any" min="0" placeholder="0">
+        <select class="unit-select">${unitOptionsHtml}</select>
         <span class="subtotal-text">0 ${item.baseUnit}</span>
         <button class="btn-remove-row" title="Hapus">✕</button>
       `;
@@ -73,18 +78,17 @@ document.addEventListener('DOMContentLoaded', () => {
       const unitSelect = row.querySelector('.unit-select');
       const removeBtn = row.querySelector('.btn-remove-row');
 
+      // Event listener otomatis hitung saat diketik / ganti dropdown
       qtyInput.addEventListener('input', () => updateCardTotal(card, item));
       unitSelect.addEventListener('change', () => updateCardTotal(card, item));
-      
+
       removeBtn.addEventListener('click', () => {
-        // Jangan hapus jika tersisa 1 baris
         if (rowsContainer.children.length > 1) {
           row.remove();
-          updateCardTotal(card, item);
         } else {
           qtyInput.value = 0;
-          updateCardTotal(card, item);
         }
+        updateCardTotal(card, item);
       });
 
       updateCardTotal(card, item);
@@ -92,11 +96,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     addRowBtn.addEventListener('click', () => createRow());
 
-    // Buat 1 baris awal secara default
+    // Buat 1 baris input pertama secara default
     createRow();
   });
 
-  // Fungsi Kalkulasi & Sum Total per Barang
+  // Hitung penjumlahan otomatis total per barang
   function updateCardTotal(card, item) {
     const rowsContainer = card.querySelector('.rows-container');
     const badge = card.querySelector('.item-total-badge');
@@ -106,21 +110,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     rows.forEach(row => {
       const qty = parseFloat(row.querySelector('.qty-input').value) || 0;
-      const unit = row.querySelector('.unit-select').value;
-      const multiplier = item.conversions[unit] || 1;
+      const selectedUnit = row.querySelector('.unit-select').value;
       
-      const subtotal = qty * multiplier;
-      totalBaseUnit += subtotal;
+      let subtotal = 0;
 
-      // Update tampilan subtotal di baris tersebut
+      if (selectedUnit === "MANUAL") {
+        // Jika pilih manual, jumlah langsung dihitung sebagai baseUnit (1 banding 1)
+        subtotal = qty;
+      } else {
+        const multiplier = item.conversions[selectedUnit] || 1;
+        subtotal = qty * multiplier;
+      }
+
+      totalBaseUnit += subtotal;
       row.querySelector('.subtotal-text').textContent = `${formatNumber(subtotal)} ${item.baseUnit}`;
     });
 
-    // Update Badge Total Akhir di Atas Card
+    // Update total badge di pojok atas kartu
     badge.textContent = `${formatNumber(totalBaseUnit)} ${item.baseUnit}`;
   }
 
-  // Format angka: jika ada koma (misal 17.84692) dipotong jadi 1 digit desimal (17,8)
+  // Format desimal: memotong 1 angka di belakang koma (misal 17.84692 -> 17,8)
   function formatNumber(val) {
     if (Number.isInteger(val)) return val.toString();
     const truncated = Math.floor(val * 10) / 10;
