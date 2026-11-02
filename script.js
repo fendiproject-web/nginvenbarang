@@ -1,4 +1,4 @@
-// Database konversi barang gudang persis sesuai gambar tabel & opsi khusus Chili Sachet
+// Database konversi barang gudang
 const inventoryData = [
   { name: "AYAM BESAR CUT 9", baseUnit: "PCS", conversions: { "PACK": 10, "PCS": 1 } },
   { name: "AYAM KECIL CUT 9", baseUnit: "PCS", conversions: { "PACK": 8, "PCS": 1 } },
@@ -46,9 +46,6 @@ const ICON_TRASH = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" 
 
 document.addEventListener('DOMContentLoaded', () => {
   const inventoryGrid = document.getElementById('inventory-grid');
-  const summaryTextarea = document.getElementById('summary-text');
-  const btnCopy = document.getElementById('btn-copy');
-  const copyTextBtn = document.getElementById('copy-text-btn');
 
   inventoryData.forEach((item, index) => {
     const card = document.createElement('div');
@@ -106,7 +103,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       qtyInput.addEventListener('input', () => {
         updateCardTotal(card, item);
-        generateSummaryNotes();
       });
 
       unitSelect.addEventListener('change', () => {
@@ -114,7 +110,6 @@ document.addEventListener('DOMContentLoaded', () => {
           qtyInput.value = 1;
         }
         updateCardTotal(card, item);
-        generateSummaryNotes();
       });
 
       removeBtn.addEventListener('click', () => {
@@ -124,7 +119,6 @@ document.addEventListener('DOMContentLoaded', () => {
           qtyInput.value = 0;
         }
         updateCardTotal(card, item);
-        generateSummaryNotes();
       });
 
       updateCardTotal(card, item);
@@ -133,15 +127,12 @@ document.addEventListener('DOMContentLoaded', () => {
     resetCardBtn.addEventListener('click', () => {
       rowsContainer.innerHTML = '';
       createRow(0);
-      generateSummaryNotes();
     });
 
     addRowBtn.addEventListener('click', () => {
       createRow(1);
-      generateSummaryNotes();
     });
 
-    // Awal langsung bernilai 1 agar terhitung dan terisi ke catatan langsung
     createRow(1);
   });
 
@@ -171,54 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     badge.textContent = `${formatNumber(totalBase)} ${item.baseUnit}`;
-    card.dataset.totalVal = totalBase;
   }
-
-  // Buat Catatan Laporan Sisa Stok Otomatis
-  function generateSummaryNotes() {
-    const cards = document.querySelectorAll('.neu-card[data-item-index]');
-    let lines = ["📋 LAPORAN SISA STOK GUDANG", "----------------------------"];
-    let hasData = false;
-
-    cards.forEach((card, idx) => {
-      const item = inventoryData[idx];
-      const totalVal = parseFloat(card.dataset.totalVal) || 0;
-
-      if (totalVal > 0) {
-        hasData = true;
-        lines.push(`• ${item.name}: ${formatNumber(totalVal)} ${item.baseUnit}`);
-      }
-    });
-
-    if (!hasData) {
-      summaryTextarea.value = "Belum ada sisa stok barang yang diisi.";
-    } else {
-      summaryTextarea.value = lines.join("\n");
-    }
-  }
-
-  // Fitur Salin Teks ke Clipboard
-  btnCopy.addEventListener('click', () => {
-    if (!summaryTextarea.value || summaryTextarea.value.startsWith("Belum ada")) return;
-
-    navigator.clipboard.writeText(summaryTextarea.value).then(() => {
-      copyTextBtn.textContent = "Tersalin!";
-      btnCopy.style.color = "#059669";
-
-      setTimeout(() => {
-        copyTextBtn.textContent = "Salin Catatan";
-        btnCopy.style.color = "";
-      }, 2000);
-    }).catch(() => {
-      summaryTextarea.select();
-      document.execCommand('copy');
-      copyTextBtn.textContent = "Tersalin!";
-      setTimeout(() => {
-        copyTextBtn.textContent = "Salin Catatan";
-        btnCopy.style.color = "";
-      }, 2000);
-    });
-  });
 
   // Format desimal: memotong 1 digit di belakang koma (misal 17.84692 -> 17,8)
   function formatNumber(val) {
@@ -226,7 +170,4 @@ document.addEventListener('DOMContentLoaded', () => {
     const truncated = Math.floor(val * 10) / 10;
     return truncated.toString().replace('.', ',');
   }
-
-  // Panggil langsung saat pertama dimuat agar catatan terisi instan
-  generateSummaryNotes();
 });
