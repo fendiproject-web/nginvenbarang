@@ -1,4 +1,4 @@
-// Database Konversi Barang berdasarkan Gambar Konversi Barang Gudang
+// Database konversi sesuai data tabel gudang
 const inventoryData = [
   { name: "AYAM BESAR CUT 9", baseUnit: "PCS", conversions: { "PACK": 10, "PCS": 1 } },
   { name: "AYAM KECIL CUT 9", baseUnit: "PCS", conversions: { "PACK": 8, "PCS": 1 } },
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const addRowBtn = document.getElementById('add-row-btn');
   const resetBtn = document.getElementById('reset-btn');
 
-  // Tambahkan 1 baris pertama saat aplikasi dibuka
+  // Tambahkan baris pertama secara otomatis saat aplikasi dimuat
   addRow();
 
   addRowBtn.addEventListener('click', () => addRow());
@@ -47,7 +47,6 @@ document.addEventListener('DOMContentLoaded', () => {
   function addRow() {
     const tr = document.createElement('tr');
     
-    // Generasi Opsi Barang
     const itemOptions = inventoryData.map((item, idx) => 
       `<option value="${idx}">${item.name}</option>`
     ).join('');
@@ -56,14 +55,14 @@ document.addEventListener('DOMContentLoaded', () => {
       <td data-label="Nama Barang">
         <select class="item-select">${itemOptions}</select>
       </td>
-      <td data-label="Satuan">
+      <td data-label="Pilih Satuan">
         <select class="unit-select"></select>
       </td>
       <td data-label="Jumlah">
-        <input type="number" class="qty-input" placeholder="0" step="any" min="0">
+        <input type="number" class="qty-input" value="1" step="any" min="0">
       </td>
-      <td data-label="Hasil Konversi">
-        <span class="converted-val">0</span>
+      <td data-label="Hasil Otomatis">
+        <span class="converted-result">0</span>
       </td>
       <td data-label="Aksi">
         <button class="btn-delete" title="Hapus Baris">✕</button>
@@ -77,7 +76,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const qtyInput = tr.querySelector('.qty-input');
     const deleteBtn = tr.querySelector('.btn-delete');
 
-    // Update opsi satuan saat barang dipilih
     function updateUnits() {
       const selectedItem = inventoryData[itemSelect.value];
       unitSelect.innerHTML = Object.keys(selectedItem.conversions)
@@ -101,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const itemSelect = tr.querySelector('.item-select');
     const unitSelect = tr.querySelector('.unit-select');
     const qtyInput = tr.querySelector('.qty-input');
-    const convertedSpan = tr.querySelector('.converted-val');
+    const convertedSpan = tr.querySelector('.converted-result');
 
     const item = inventoryData[itemSelect.value];
     const unit = unitSelect.value;
@@ -110,9 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const multiplier = item.conversions[unit] || 1;
     const rawTotal = qty * multiplier;
 
-    const formattedTotal = formatDecimal(rawTotal);
-    convertedSpan.textContent = `${formattedTotal} ${item.baseUnit}`;
-
+    convertedSpan.textContent = `${formatDecimal(rawTotal)} ${item.baseUnit}`;
     calculateTotals();
   }
 
@@ -156,20 +152,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     summaryList.innerHTML = keys.map(name => {
       const item = totals[name];
-      const formattedVal = formatDecimal(item.amount);
       return `
         <div class="summary-card">
-          <span class="item-name">${name}</span>
-          <span class="item-total">${formattedVal} ${item.unit}</span>
+          <div class="item-title">${name}</div>
+          <div class="item-val">${formatDecimal(item.amount)} ${item.unit}</div>
         </div>
       `;
     }).join('');
   }
 
-  // Format koma / desimal (misal 17.84692 menjadi 17.8)
+  // Format angka desimal: dipotong 1 angka di belakang koma (contoh: 17.84692 menjadi 17,8)
   function formatDecimal(val) {
     if (Number.isInteger(val)) return val.toString();
-    // Potong angka desimal menjadi 1 digit di belakang koma (contoh: 17.84692 -> 17.8)
     const truncated = Math.floor(val * 10) / 10;
     return truncated.toString().replace('.', ',');
   }
