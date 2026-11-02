@@ -1,17 +1,20 @@
 :root {
-  --bg-main: #080c14;
-  --glass-card: rgba(255, 255, 255, 0.05);
-  --glass-card-hover: rgba(255, 255, 255, 0.08);
-  --glass-border: rgba(255, 255, 255, 0.12);
-  --glass-input: rgba(15, 23, 42, 0.7);
-
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
+  --bg-color: #eef2f7;
+  --text-main: #2d3748;
+  --text-muted: #718096;
   
-  --accent-cyan: #38bdf8;
-  --accent-emerald: #34d399;
-  --accent-rose: #fb7185;
-  --accent-purple: #c084fc;
+  --accent-blue: #3182ce;
+  --accent-blue-hover: #2b6cb0;
+  --accent-orange: #dd6b20;
+  --accent-green: #38a169;
+  --accent-red: #e53e3e;
+
+  /* Neumorphism Light Mode Shadows */
+  --neu-shadow-flat: 8px 8px 16px #c5cbcf, -8px -8px 16px #ffffff;
+  --neu-shadow-hover: 12px 12px 24px #bebec3, -12px -12px 24px #ffffff;
+  --neu-shadow-inset: inset 3px 3px 6px #c5cbcf, inset -3px -3px 6px #ffffff;
+  --neu-shadow-btn: 5px 5px 10px #c5cbcf, -5px -5px 10px #ffffff;
+  --neu-shadow-btn-pressed: inset 2px 2px 5px #c5cbcf, inset -2px -2px 5px #ffffff;
 }
 
 * {
@@ -22,58 +25,41 @@
 }
 
 body {
-  background-color: var(--bg-main);
+  background-color: var(--bg-color);
   color: var(--text-main);
   min-height: 100vh;
-  padding: 30px 16px;
-  position: relative;
-  overflow-x: hidden;
+  padding: 32px 16px;
 }
-
-/* Background Ambient Glows (Glassmorphism Effect) */
-.ambient-glow {
-  position: fixed;
-  border-radius: 50%;
-  filter: blur(120px);
-  z-index: -1;
-  opacity: 0.35;
-  pointer-events: none;
-}
-.glow-1 { width: 500px; height: 500px; background: #4f46e5; top: -100px; left: -150px; }
-.glow-2 { width: 450px; height: 450px; background: #059669; bottom: -100px; right: -100px; }
-.glow-3 { width: 400px; height: 400px; background: #e11d48; top: 35%; left: 40%; }
 
 .app-container {
-  max-width: 1200px;
+  max-width: 1240px;
   margin: 0 auto;
 }
 
 .app-header {
   text-align: center;
-  margin-bottom: 32px;
+  margin-bottom: 36px;
 }
 
-.header-tag {
+.header-badge {
   display: inline-block;
-  background: rgba(56, 189, 248, 0.1);
-  color: var(--accent-cyan);
-  border: 1px solid rgba(56, 189, 248, 0.25);
-  padding: 5px 14px;
-  border-radius: 20px;
+  background: var(--bg-color);
+  color: var(--accent-blue);
+  padding: 6px 18px;
+  border-radius: 30px;
   font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  margin-bottom: 10px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
   text-transform: uppercase;
+  box-shadow: var(--neu-shadow-btn);
+  margin-bottom: 14px;
 }
 
 .app-header h1 {
   font-size: 2.2rem;
   font-weight: 800;
+  color: #1a202c;
   letter-spacing: -0.5px;
-  background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
 }
 
 .app-header p {
@@ -82,31 +68,26 @@ body {
   margin-top: 6px;
 }
 
-/* Grid Layout Cards */
+/* Grid Layout */
 .inventory-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-  gap: 20px;
+  gap: 26px;
 }
 
-/* Glass Card Component */
-.glass-card {
-  background: var(--glass-card);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
-  border-radius: 20px;
-  padding: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+/* Neumorphic Card Component */
+.neu-card {
+  background: var(--bg-color);
+  border-radius: 24px;
+  padding: 22px;
+  box-shadow: var(--neu-shadow-flat);
   display: flex;
   flex-direction: column;
-  transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+  transition: all 0.3s ease;
 }
 
-.glass-card:hover {
-  background: var(--glass-card-hover);
-  border-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
+.neu-card:hover {
+  box-shadow: var(--neu-shadow-hover);
 }
 
 .card-header {
@@ -115,32 +96,60 @@ body {
   align-items: center;
   margin-bottom: 16px;
   padding-bottom: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 2px solid rgba(203, 213, 225, 0.4);
 }
 
 .card-title {
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 800;
-  color: #ffffff;
-  letter-spacing: 0.3px;
+  color: #1a202c;
+  text-transform: uppercase;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .card-total-badge {
-  background: rgba(52, 211, 153, 0.12);
-  color: var(--accent-emerald);
-  border: 1px solid rgba(52, 211, 153, 0.3);
-  padding: 6px 14px;
+  background: var(--bg-color);
+  color: var(--accent-green);
+  box-shadow: var(--neu-shadow-btn);
+  padding: 6px 12px;
   border-radius: 12px;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 800;
   white-space: nowrap;
+}
+
+/* Tombol Reset Per-Tabel */
+.btn-reset-card {
+  background: var(--bg-color);
+  color: var(--accent-orange);
+  box-shadow: var(--neu-shadow-btn);
+  border: none;
+  padding: 6px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-reset-card:hover {
+  color: var(--accent-red);
+}
+
+.btn-reset-card:active {
+  box-shadow: var(--neu-shadow-btn-pressed);
 }
 
 /* Input Rows Container */
 .rows-container {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   margin-bottom: 16px;
 }
 
@@ -148,30 +157,26 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: rgba(0, 0, 0, 0.25);
-  padding: 8px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 6px;
+  border-radius: 14px;
 }
 
+/* Neumorphic Input & Select (Inset Shadow) */
 input[type="number"], select {
-  background: var(--glass-input);
-  border: 1px solid var(--glass-border);
-  border-radius: 8px;
-  color: #fff;
-  padding: 8px 10px;
+  background: var(--bg-color);
+  box-shadow: var(--neu-shadow-inset);
+  border: none;
+  border-radius: 10px;
+  color: var(--text-main);
+  padding: 10px 12px;
   font-size: 0.88rem;
+  font-weight: 600;
   outline: none;
   transition: all 0.2s ease;
 }
 
-select option {
-  background: #111827;
-  color: #fff;
-}
-
 input[type="number"] {
-  width: 75px;
+  width: 80px;
 }
 
 select {
@@ -180,26 +185,26 @@ select {
 }
 
 input[type="number"]:focus, select:focus {
-  border-color: var(--accent-cyan);
-  box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+  color: var(--accent-blue);
 }
 
 .row-subtotal {
   font-size: 0.85rem;
   font-weight: 700;
-  color: var(--accent-cyan);
-  min-width: 70px;
+  color: var(--accent-blue);
+  min-width: 65px;
   text-align: right;
   white-space: nowrap;
 }
 
 /* Buttons */
 .btn-add-row {
-  background: rgba(56, 189, 248, 0.12);
-  color: var(--accent-cyan);
-  border: 1px solid rgba(56, 189, 248, 0.25);
+  background: var(--bg-color);
+  color: var(--accent-blue);
+  box-shadow: var(--neu-shadow-btn);
+  border: none;
   padding: 10px;
-  border-radius: 12px;
+  border-radius: 14px;
   font-weight: 700;
   font-size: 0.85rem;
   cursor: pointer;
@@ -209,19 +214,23 @@ input[type="number"]:focus, select:focus {
 }
 
 .btn-add-row:hover {
-  background: var(--accent-cyan);
-  color: #000;
+  color: var(--accent-blue-hover);
+}
+
+.btn-add-row:active {
+  box-shadow: var(--neu-shadow-btn-pressed);
 }
 
 .btn-remove-row {
-  background: rgba(251, 113, 133, 0.15);
-  color: var(--accent-rose);
-  border: 1px solid rgba(251, 113, 133, 0.25);
-  border-radius: 8px;
-  width: 30px;
-  height: 30px;
+  background: var(--bg-color);
+  color: var(--accent-red);
+  box-shadow: var(--neu-shadow-btn);
+  border: none;
+  border-radius: 10px;
+  width: 32px;
+  height: 32px;
   cursor: pointer;
-  font-weight: bold;
+  font-weight: 800;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -229,8 +238,11 @@ input[type="number"]:focus, select:focus {
 }
 
 .btn-remove-row:hover {
-  background: var(--accent-rose);
-  color: #fff;
+  background: #fff0f0;
+}
+
+.btn-remove-row:active {
+  box-shadow: var(--neu-shadow-btn-pressed);
 }
 
 @media (max-width: 480px) {
