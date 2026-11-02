@@ -3,18 +3,18 @@
   --text-main: #2d3748;
   --text-muted: #718096;
   
-  --accent-blue: #3182ce;
-  --accent-blue-hover: #2b6cb0;
-  --accent-green: #2f855a;
+  --accent-blue: #2563eb;
+  --accent-blue-hover: #1d4ed8;
+  --accent-green: #10b981;
   --accent-orange: #dd6b20;
-  --accent-red: #e53e3e;
+  --accent-red: #ef4444;
 
-  /* Presisi Bayangan Neumorphism Light Mode */
-  --neu-shadow-flat: 8px 8px 16px #a3b1c6, -8px -8px 16px #ffffff;
-  --neu-shadow-hover: 12px 12px 20px #98a7bd, -12px -12px 20px #ffffff;
-  --neu-shadow-inset: inset 3px 3px 6px #b8c5d6, inset -3px -3px 6px #ffffff;
-  --neu-shadow-btn: 5px 5px 10px #a3b1c6, -5px -5px 10px #ffffff;
-  --neu-shadow-btn-pressed: inset 2px 2px 5px #a3b1c6, inset -2px -2px 5px #ffffff;
+  /* Bayangan Neumorphism Presisi & Lebih Ringkas */
+  --neu-shadow-flat: 6px 6px 12px #a3b1c6, -6px -6px 12px #ffffff;
+  --neu-shadow-hover: 9px 9px 16px #98a7bd, -9px -9px 16px #ffffff;
+  --neu-shadow-inset: inset 2px 2px 5px #b8c5d6, inset -2px -2px 5px #ffffff;
+  --neu-shadow-btn: 4px 4px 8px #a3b1c6, -4px -4px 8px #ffffff;
+  --neu-shadow-btn-pressed: inset 2px 2px 4px #a3b1c6, inset -2px -2px 4px #ffffff;
 }
 
 * {
@@ -28,37 +28,37 @@ body {
   background-color: var(--bg-color);
   color: var(--text-main);
   min-height: 100vh;
-  padding: 32px 16px;
+  padding: 20px 12px;
 }
 
 .app-container {
-  max-width: 1320px;
+  max-width: 1280px;
   margin: 0 auto;
 }
 
 .app-header {
   text-align: center;
-  margin-bottom: 36px;
+  margin-bottom: 24px;
 }
 
 .header-badge {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   background: var(--bg-color);
   color: var(--accent-blue);
-  padding: 8px 20px;
-  border-radius: 30px;
-  font-size: 0.8rem;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.72rem;
   font-weight: 800;
-  letter-spacing: 0.6px;
+  letter-spacing: 0.5px;
   text-transform: uppercase;
   box-shadow: var(--neu-shadow-btn);
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 
 .app-header h1 {
-  font-size: 2.2rem;
+  font-size: 1.75rem;
   font-weight: 800;
   color: #1a202c;
   letter-spacing: -0.5px;
@@ -66,26 +66,27 @@ body {
 
 .app-header p {
   color: var(--text-muted);
-  font-size: 0.95rem;
-  margin-top: 6px;
+  font-size: 0.85rem;
+  margin-top: 4px;
 }
 
-/* Responsive Grid Kartu */
+/* Compact Grid Layout */
 .inventory-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(390px, 1fr));
-  gap: 28px;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
 }
 
-/* Card Component Neumorphism */
+/* Card Component Neumorphism Compact */
 .neu-card {
   background: var(--bg-color);
-  border-radius: 20px;
-  padding: 22px;
+  border-radius: 16px;
+  padding: 14px;
   box-shadow: var(--neu-shadow-flat);
   display: flex;
   flex-direction: column;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
 }
 
 .neu-card:hover {
@@ -96,13 +97,13 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 18px;
-  padding-bottom: 12px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
   border-bottom: 2px solid rgba(163, 177, 198, 0.3);
 }
 
 .card-title {
-  font-size: 0.95rem;
+  font-size: 0.82rem;
   font-weight: 800;
   color: #1a202c;
   text-transform: uppercase;
@@ -111,16 +112,16 @@ body {
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .card-total-badge {
   background: var(--bg-color);
   color: var(--accent-green);
   box-shadow: var(--neu-shadow-btn);
-  padding: 6px 14px;
-  border-radius: 12px;
-  font-size: 0.9rem;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 0.8rem;
   font-weight: 800;
   white-space: nowrap;
 }
@@ -131,14 +132,14 @@ body {
   color: var(--accent-orange);
   box-shadow: var(--neu-shadow-btn);
   border: none;
-  padding: 6px 12px;
-  border-radius: 12px;
-  font-size: 0.78rem;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 0.72rem;
   font-weight: 700;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   transition: all 0.2s ease;
 }
 
@@ -154,27 +155,27 @@ body {
 .rows-container {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 18px;
+  gap: 8px;
+  margin-bottom: 12px;
 }
 
-/* CSS Grid untuk kerapian layout per-baris */
+/* Grid Layout Presisi Per Baris Input */
 .input-row {
   display: grid;
-  grid-template-columns: 70px 1fr 75px 34px;
-  gap: 10px;
+  grid-template-columns: 55px 1fr 65px 28px;
+  gap: 6px;
   align-items: center;
 }
 
-/* Neumorphic Input & Select */
+/* Neumorphic Input & Select Compact */
 input[type="number"], select {
   background: var(--bg-color);
   box-shadow: var(--neu-shadow-inset);
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   color: var(--text-main);
-  padding: 10px 12px;
-  font-size: 0.85rem;
+  padding: 7px 8px;
+  font-size: 0.78rem;
   font-weight: 600;
   outline: none;
   width: 100%;
@@ -193,7 +194,7 @@ input[type="number"]:focus, select:focus {
 }
 
 .row-subtotal {
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   font-weight: 700;
   color: var(--accent-blue);
   text-align: right;
@@ -208,15 +209,15 @@ input[type="number"]:focus, select:focus {
   color: var(--accent-blue);
   box-shadow: var(--neu-shadow-btn);
   border: none;
-  padding: 12px;
-  border-radius: 12px;
+  padding: 8px;
+  border-radius: 10px;
   font-weight: 700;
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 4px;
   transition: all 0.2s ease;
   width: 100%;
   margin-top: auto;
@@ -235,9 +236,9 @@ input[type="number"]:focus, select:focus {
   color: var(--accent-red);
   box-shadow: var(--neu-shadow-btn);
   border: none;
-  border-radius: 10px;
-  width: 34px;
-  height: 34px;
+  border-radius: 8px;
+  width: 28px;
+  height: 28px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -253,12 +254,83 @@ input[type="number"]:focus, select:focus {
   box-shadow: var(--neu-shadow-btn-pressed);
 }
 
+/* Copy Section at Bottom */
+.copy-section {
+  margin-top: 10px;
+  padding: 18px;
+}
+
+.copy-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.copy-title {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--accent-blue);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-copy {
+  background: var(--bg-color);
+  color: var(--accent-green);
+  box-shadow: var(--neu-shadow-btn);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-copy:hover {
+  color: #059669;
+}
+
+.btn-copy:active {
+  box-shadow: var(--neu-shadow-btn-pressed);
+}
+
+textarea#summary-text {
+  width: 100%;
+  height: 140px;
+  background: var(--bg-color);
+  box-shadow: var(--neu-shadow-inset);
+  border: none;
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-main);
+  resize: vertical;
+  outline: none;
+  line-height: 1.5;
+}
+
 @media (max-width: 480px) {
   .inventory-grid {
     grid-template-columns: 1fr;
   }
   .input-row {
-    grid-template-columns: 60px 1fr 65px 30px;
-    gap: 6px;
+    grid-template-columns: 50px 1fr 58px 26px;
+    gap: 4px;
+  }
+  .copy-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .btn-copy {
+    width: 100%;
+    justify-content: center;
   }
 }
