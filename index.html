@@ -3,59 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pencatatan Gudang - Glassmorphism</title>
+  <title>Pencatatan Sisa Gudang - Glassmorphism</title>
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <!-- Background Glow Effects -->
-  <div class="blob blob-1"></div>
-  <div class="blob blob-2"></div>
-  <div class="blob blob-3"></div>
+  <!-- Background Glow Effect -->
+  <div class="glow-bg blob-1"></div>
+  <div class="glow-bg blob-2"></div>
+  <div class="glow-bg blob-3"></div>
 
   <div class="app-container">
     <header class="app-header">
-      <h1>📦 Catat Sisa Gudang</h1>
-      <p>Hitung otomatis jumlah barang dari pilihan satuan gudang</p>
+      <h1>📦 Pencatatan Sisa Gudang</h1>
+      <p>Setiap barang sudah tersedia. Tambah baris input jika barang berada di beberapa tempat terpisah.</p>
     </header>
 
-    <main class="main-content">
-      <!-- Section Input Table -->
-      <section class="glass-card">
-        <div class="card-header">
-          <h2>Input Barang Sisa</h2>
-          <button id="add-row-btn" class="btn btn-primary">+ Tambah Baris</button>
-        </div>
-
-        <div class="table-wrapper">
-          <table>
-            <thead>
-              <tr>
-                <th>Nama Barang</th>
-                <th>Pilih Satuan</th>
-                <th>Jumlah</th>
-                <th>Hasil Otomatis</th>
-                <th>Aksi</th>
-              </tr>
-            </thead>
-            <tbody id="inventory-rows">
-              <!-- Baris dinamis ditambahkan via JavaScript -->
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- Section Total Ringkasan -->
-      <section class="glass-card">
-        <div class="card-header">
-          <h2>📊 Total Ringkasan Akhir</h2>
-          <button id="reset-btn" class="btn btn-danger-outline">Reset Semua</button>
-        </div>
-        <div id="summary-list" class="summary-grid">
-          <p class="empty-state">Belum ada barang yang dicatat.</p>
-        </div>
-      </section>
-    </main>
+    <!-- Kontainer Semua Tabel Barang -->
+    <main id="items-container" class="items-grid"></main>
   </div>
 
   <script src="script.js"></script>
