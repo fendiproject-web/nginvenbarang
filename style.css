@@ -226,7 +226,7 @@ input[type="number"]:focus, select:focus {
   box-shadow: var(--neu-shadow-btn-pressed);
 }
 
-/* Styles Tabel Kurangan (Manual Multiplikasi Tanpa Dropdown) */
+/* Styles Tabel Kurangan (Manual Pengurangan) */
 .table-responsive {
   width: 100%;
   overflow-x: auto;
