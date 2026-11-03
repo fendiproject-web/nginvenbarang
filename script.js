@@ -1,169 +1,249 @@
-// Database konversi barang gudang
-const inventoryData = [
-  { name: "AYAM BESAR CUT 9", baseUnit: "PCS", conversions: { "PACK": 10, "PCS": 1 } },
-  { name: "AYAM KECIL CUT 9", baseUnit: "PCS", conversions: { "PACK": 8, "PCS": 1 } },
-  { name: "AYAM CUT 14", baseUnit: "PCS", conversions: { "PACK": 14, "PCS": 1 } },
-  { name: "BERAS", baseUnit: "GR", conversions: { "ZAK": 25000, "PORSI": 90, "GR": 1 } },
-  { name: "TEPUNG BREADER", baseUnit: "GR", conversions: { "DUS": 25000, "PACK": 12500, "GR": 1 } },
-  { name: "SAMBAL", baseUnit: "GR", conversions: { "PACK": 1000, "PORSI": 25, "GR": 1 } },
-  { 
-    name: "CHILLI SACHET", 
-    baseUnit: "PCS", 
-    conversions: { 
-      "DUS (30 PACK / 750 PCS)": 750, 
-      "DUS (21 PACK / 462 PCS)": 462, 
-      "PACK (25 PCS)": 25, 
-      "PACK (22 PCS)": 22, 
-      "PCS": 1 
-    } 
-  },
-  { name: "TOMAT SACHET", baseUnit: "PCS", conversions: { "DUS": 750, "PACK": 25, "PCS": 1 } },
-  { name: "AIR MINERAL (PRIMA)", baseUnit: "BTL", conversions: { "DUS": 24, "BTL": 1 } },
-  { name: "SAOS GANGNAM", baseUnit: "GR", conversions: { "PACK": 1000, "PORSI": 40, "GR": 1 } },
-  { name: "LUNCHBOX", baseUnit: "LBR", conversions: { "PACK": 200, "LBR": 1 } },
-  { name: "PAPER BAG", baseUnit: "LBR", conversions: { "DUS": 2000, "PACK": 100, "LBR": 1 } },
-  { name: "CUP SAMBAL 25GR", baseUnit: "PCS", conversions: { "DUS": 1200, "PACK": 50, "PCS": 1 } },
-  { name: "CUP SAOS GANGNAM 35GR", baseUnit: "PCS", conversions: { "DUS": 1000, "PACK": 50, "PCS": 1 } },
-  { name: "KERTAS WRAP", baseUnit: "LBR", conversions: { "DUS": 5000, "PACK": 100, "LBR": 1 } },
-  { name: "FRENCH FRIES", baseUnit: "GR", conversions: { "PACK": 2000, "PORSI": 90, "GR": 1 } },
-  { name: "DIMSUM", baseUnit: "PCS", conversions: { "PACK": 4, "PORSI": 4, "PCS": 1 } },
-  { name: "CEKER MERAH", baseUnit: "PCS", conversions: { "PACK": 4, "PORSI": 4, "PCS": 1 } },
-  { name: "BOX DIMSUM", baseUnit: "PCS", conversions: { "PACK": 50, "PCS": 1 } },
-  { name: "PAPER FRENCH FRIES", baseUnit: "PCS", conversions: { "IKAT": 200, "PCS": 1 } },
-  { name: "MINYAK GORENG", baseUnit: "LTR", conversions: { "DUS": 18, "JER": 10, "LTR": 1 } },
-  { name: "KRESEK UK 21", baseUnit: "PCS", conversions: { "IKAT": 500, "PACK": 50, "PCS": 1 } },
-  { name: "KRESEK UK 28", baseUnit: "PCS", conversions: { "IKAT": 500, "PACK": 50, "PCS": 1 } },
-  { name: "KRESEK UK 40", baseUnit: "PCS", conversions: { "IKAT": 250, "PACK": 50, "PCS": 1 } },
-  { name: "KRESEK UK 50/55", baseUnit: "PCS", conversions: { "IKAT": 150, "PACK": 30, "PCS": 1 } },
-  { name: "KERTAS THERMAL", baseUnit: "PCS", conversions: { "DUS": 100, "PACK": 10, "PCS": 1 } },
-  { name: "HAND GLOVE", baseUnit: "PCS", conversions: { "PACK": 100, "PCS": 1 } }
-];
+:root {
+  --bg-color: #e0e5ec;
+  --text-main: #2d3748;
+  --text-muted: #718096;
+  
+  --accent-blue: #2563eb;
+  --accent-blue-hover: #1d4ed8;
+  --accent-green: #059669;
+  --accent-orange: #dd6b20;
+  --accent-red: #ef4444;
 
-// SVG Icons
-const ICON_REFRESH = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>`;
-const ICON_PLUS = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>`;
-const ICON_TRASH = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>`;
+  /* Bayangan Neumorphism Presisi & Halus */
+  --neu-shadow-flat: 6px 6px 12px #a3b1c6, -6px -6px 12px #ffffff;
+  --neu-shadow-hover: 9px 9px 16px #98a7bd, -9px -9px 16px #ffffff;
+  --neu-shadow-inset: inset 2px 2px 5px #b8c5d6, inset -2px -2px 5px #ffffff;
+  --neu-shadow-btn: 4px 4px 8px #a3b1c6, -4px -4px 8px #ffffff;
+  --neu-shadow-btn-pressed: inset 2px 2px 4px #a3b1c6, inset -2px -2px 4px #ffffff;
+}
 
-document.addEventListener('DOMContentLoaded', () => {
-  const inventoryGrid = document.getElementById('inventory-grid');
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
 
-  inventoryData.forEach((item, index) => {
-    const card = document.createElement('div');
-    card.className = 'neu-card';
+body {
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  min-height: 100vh;
+  padding: 16px 12px;
+}
 
-    card.innerHTML = `
-      <div class="card-header">
-        <span class="card-title">${item.name}</span>
-        <div class="header-actions">
-          <button class="btn-reset-card" title="Reset Barang Ini">
-            ${ICON_REFRESH} Reset
-          </button>
-          <span class="card-total-badge">0 ${item.baseUnit}</span>
-        </div>
-      </div>
-      <div class="rows-container"></div>
-      <button class="btn-add-row">
-        ${ICON_PLUS} Tambah Baris Input
-      </button>
-    `;
+.app-container {
+  max-width: 1280px;
+  margin: 0 auto;
+}
 
-    inventoryGrid.appendChild(card);
+/* Container Banner Ramping */
+.banner-header {
+  width: 100%;
+  height: 160px;
+  margin-bottom: 16px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--neu-shadow-flat);
+  background: var(--bg-color);
+}
 
-    const rowsContainer = card.querySelector('.rows-container');
-    const addRowBtn = card.querySelector('.btn-add-row');
-    const resetCardBtn = card.querySelector('.btn-reset-card');
+.banner-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  border-radius: 16px;
+}
 
-    function createRow(defaultQty = 1) {
-      const row = document.createElement('div');
-      row.className = 'input-row';
+/* Compact Grid Layout */
+.inventory-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 16px;
+}
 
-      const standardUnits = Object.keys(item.conversions);
-      let optionsHtml = standardUnits
-        .map(u => {
-          const count = item.conversions[u];
-          return `<option value="${u}">${u} (${count} ${item.baseUnit})</option>`;
-        })
-        .join('');
+/* Neumorphic Card Component */
+.neu-card {
+  background: var(--bg-color);
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: var(--neu-shadow-flat);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.25s ease;
+}
 
-      optionsHtml += `<option value="MANUAL">Masukkan Jumlah Manual (${item.baseUnit})</option>`;
+.neu-card:hover {
+  box-shadow: var(--neu-shadow-hover);
+}
 
-      row.innerHTML = `
-        <input type="number" class="qty-input" value="${defaultQty}" step="any" min="0" placeholder="1">
-        <select class="unit-select">${optionsHtml}</select>
-        <span class="row-subtotal">0 ${item.baseUnit}</span>
-        <button class="btn-remove-row" title="Hapus Baris">${ICON_TRASH}</button>
-      `;
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid rgba(163, 177, 198, 0.3);
+}
 
-      rowsContainer.appendChild(row);
+.card-title {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #1a202c;
+  text-transform: uppercase;
+}
 
-      const qtyInput = row.querySelector('.qty-input');
-      const unitSelect = row.querySelector('.unit-select');
-      const removeBtn = row.querySelector('.btn-remove-row');
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
 
-      qtyInput.addEventListener('input', () => updateCardTotal(card, item));
-      unitSelect.addEventListener('change', () => {
-        if (!qtyInput.value || parseFloat(qtyInput.value) === 0) {
-          qtyInput.value = 1;
-        }
-        updateCardTotal(card, item);
-      });
+.card-total-badge {
+  background: var(--bg-color);
+  color: var(--accent-green);
+  box-shadow: var(--neu-shadow-btn);
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
 
-      removeBtn.addEventListener('click', () => {
-        if (rowsContainer.children.length > 1) {
-          row.remove();
-        } else {
-          qtyInput.value = 0;
-        }
-        updateCardTotal(card, item);
-      });
+.btn-reset-card {
+  background: var(--bg-color);
+  color: var(--accent-orange);
+  box-shadow: var(--neu-shadow-btn);
+  border: none;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+}
 
-      updateCardTotal(card, item);
-    }
+.btn-reset-card:hover {
+  color: var(--accent-red);
+}
 
-    resetCardBtn.addEventListener('click', () => {
-      rowsContainer.innerHTML = '';
-      createRow(0);
-    });
+.btn-reset-card:active {
+  box-shadow: var(--neu-shadow-btn-pressed);
+}
 
-    addRowBtn.addEventListener('click', () => {
-      createRow(1);
-    });
+.rows-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
 
-    createRow(1);
-  });
+.input-row {
+  display: grid;
+  grid-template-columns: 55px 1fr 65px 28px;
+  gap: 6px;
+  align-items: center;
+}
 
-  // Hitung total per kartu
-  function updateCardTotal(card, item) {
-    const rowsContainer = card.querySelector('.rows-container');
-    const badge = card.querySelector('.card-total-badge');
-    const rows = rowsContainer.querySelectorAll('.input-row');
+input[type="number"], select {
+  background: var(--bg-color);
+  box-shadow: var(--neu-shadow-inset);
+  border: none;
+  border-radius: 8px;
+  color: var(--text-main);
+  padding: 7px 8px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  outline: none;
+  width: 100%;
+  transition: all 0.2s ease;
+}
 
-    let totalBase = 0;
+select {
+  cursor: pointer;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
 
-    rows.forEach(row => {
-      const qty = parseFloat(row.querySelector('.qty-input').value) || 0;
-      const selectedUnit = row.querySelector('.unit-select').value;
+input[type="number"]:focus, select:focus {
+  color: var(--accent-blue);
+}
 
-      let subtotal = 0;
+.row-subtotal {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--accent-blue);
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
-      if (selectedUnit === "MANUAL") {
-        subtotal = qty;
-      } else {
-        const multiplier = item.conversions[selectedUnit] || 1;
-        subtotal = qty * multiplier;
-      }
+.btn-add-row {
+  background: var(--bg-color);
+  color: var(--accent-blue);
+  box-shadow: var(--neu-shadow-btn);
+  border: none;
+  padding: 8px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.78rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+  width: 100%;
+  margin-top: auto;
+}
 
-      totalBase += subtotal;
-      row.querySelector('.row-subtotal').textContent = `${formatNumber(subtotal)} ${item.baseUnit}`;
-    });
+.btn-add-row:hover {
+  color: var(--accent-blue-hover);
+}
 
-    badge.textContent = `${formatNumber(totalBase)} ${item.baseUnit}`;
+.btn-add-row:active {
+  box-shadow: var(--neu-shadow-btn-pressed);
+}
+
+.btn-remove-row {
+  background: var(--bg-color);
+  color: var(--accent-red);
+  box-shadow: var(--neu-shadow-btn);
+  border: none;
+  border-radius: 8px;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.btn-remove-row:hover {
+  color: #dc2626;
+}
+
+.btn-remove-row:active {
+  box-shadow: var(--neu-shadow-btn-pressed);
+}
+
+/* Responsif khusus HP agar banner pas & proporsional */
+@media (max-width: 640px) {
+  .banner-header {
+    height: 110px;
   }
-
-  // Format desimal: memotong 1 digit di belakang koma (contoh: 17.84692 -> 17,8)
-  function formatNumber(val) {
-    if (Number.isInteger(val)) return val.toString();
-    const truncated = Math.floor(val * 10) / 10;
-    return truncated.toString().replace('.', ',');
+  .inventory-grid {
+    grid-template-columns: 1fr;
   }
-});
+  .input-row {
+    grid-template-columns: 50px 1fr 58px 26px;
+    gap: 4px;
+  }
+}
