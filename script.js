@@ -1,3 +1,4 @@
+// Database konversi barang gudang
 const inventoryData = [
   { name: "AYAM BESAR CUT 9", baseUnit: "PCS", conversions: { "PACK": 10, "PCS": 1 } },
   { name: "AYAM KECIL CUT 9", baseUnit: "PCS", conversions: { "PACK": 8, "PCS": 1 } },
@@ -44,93 +45,126 @@ const ICON_TRASH = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" 
 
 document.addEventListener('DOMContentLoaded', () => {
   const inventoryGrid = document.getElementById('inventory-grid');
+  const shortageGrid = document.getElementById('shortage-grid');
 
-  inventoryData.forEach((item, index) => {
-    const card = document.createElement('div');
-    card.className = 'neu-card';
+  // Render Grid Stok
+  renderGrid(inventoryGrid, false);
 
-    card.innerHTML = `
-      <div class="card-header">
-        <span class="card-title">${item.name}</span>
-        <div class="header-actions">
-          <button class="btn-reset-card" title="Reset Barang Ini">
-            ${ICON_REFRESH} Reset
-          </button>
-          <span class="card-total-badge">0 ${item.baseUnit}</span>
-        </div>
-      </div>
-      <div class="rows-container"></div>
-      <button class="btn-add-row">
-        ${ICON_PLUS} Tambah Baris Input
-      </button>
-    `;
+  // Render Grid Kurangan (Sama persis list barangnya)
+  renderGrid(shortageGrid, true);
 
-    inventoryGrid.appendChild(card);
+  // Tab Switcher Handler
+  const navBtns = document.querySelectorAll('.nav-btn');
+  const tabContents = document.querySelectorAll('.tab-content');
 
-    const rowsContainer = card.querySelector('.rows-container');
-    const addRowBtn = card.querySelector('.btn-add-row');
-    const resetCardBtn = card.querySelector('.btn-reset-card');
+  navBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      navBtns.forEach(b => b.classList.remove('active'));
+      tabContents.forEach(tc => tc.classList.remove('active'));
 
-    function createRow(defaultQty = 1) {
-      const row = document.createElement('div');
-      row.className = 'input-row';
-
-      const standardUnits = Object.keys(item.conversions);
-      let optionsHtml = standardUnits
-        .map(u => {
-          const count = item.conversions[u];
-          return `<option value="${u}">${u} (${count} ${item.baseUnit})</option>`;
-        })
-        .join('');
-
-      optionsHtml += `<option value="MANUAL">Masukkan Jumlah Manual (${item.baseUnit})</option>`;
-
-      row.innerHTML = `
-        <input type="number" class="qty-input" value="${defaultQty}" step="any" min="0" placeholder="1">
-        <select class="unit-select">${optionsHtml}</select>
-        <span class="row-subtotal">0 ${item.baseUnit}</span>
-        <button class="btn-remove-row" title="Hapus Baris">${ICON_TRASH}</button>
-      `;
-
-      rowsContainer.appendChild(row);
-
-      const qtyInput = row.querySelector('.qty-input');
-      const unitSelect = row.querySelector('.unit-select');
-      const removeBtn = row.querySelector('.btn-remove-row');
-
-      qtyInput.addEventListener('input', () => updateCardTotal(card, item));
-      unitSelect.addEventListener('change', () => {
-        if (!qtyInput.value || parseFloat(qtyInput.value) === 0) {
-          qtyInput.value = 1;
-        }
-        updateCardTotal(card, item);
-      });
-
-      removeBtn.addEventListener('click', () => {
-        if (rowsContainer.children.length > 1) {
-          row.remove();
-        } else {
-          qtyInput.value = 0;
-        }
-        updateCardTotal(card, item);
-      });
-
-      updateCardTotal(card, item);
-    }
-
-    resetCardBtn.addEventListener('click', () => {
-      rowsContainer.innerHTML = '';
-      createRow(0);
+      btn.classList.add('active');
+      const targetTab = btn.dataset.tab;
+      document.getElementById(targetTab).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
-
-    addRowBtn.addEventListener('click', () => {
-      createRow(1);
-    });
-
-    createRow(1);
   });
 
-  function updateCardTotal(card, item) {
+  // Fungsi pembuat Kartu Grid (berlaku untuk Stok & Kurangan)
+  function renderGrid(containerElement, isKurangan = false) {
+    inventoryData.forEach((item, index) => {
+      const card = document.createElement('div');
+      card.className = 'neu-card';
+
+      const badgeClass = isKurangan ? 'card-total-badge badge-kurangan' : 'card-total-badge';
+      const btnAddClass = isKurangan ? 'btn-add-row btn-kurangan' : 'btn-add-row';
+
+      card.innerHTML = `
+        <div class="card-header">
+          <span class="card-title">${item.name}</span>
+          <div class="header-actions">
+            <button class="btn-reset-card" title="Reset Barang Ini">
+              ${ICON_REFRESH} Reset
+            </button>
+            <span class="${badgeClass}">0 ${item.baseUnit}</span>
+          </div>
+        </div>
+        <div class="rows-container"></div>
+        <button class="${btnAddClass}">
+          ${ICON_PLUS} Tambah Baris Input
+        </button>
+      `;
+
+      containerElement.appendChild(card);
+
+      const rowsContainer = card.querySelector('.rows-container');
+      const addRowBtn = card.querySelector('.btn-add-row');
+      const resetCardBtn = card.querySelector('.btn-reset-card');
+
+      function createRow(defaultQty = 0) {
+        const row = document.createElement('div');
+        row.className = 'input-row';
+
+        const standardUnits = Object.keys(item.conversions);
+        let optionsHtml = standardUnits
+          .map(u => {
+            const count = item.conversions[u];
+            return `<option value="${u}">${u} (${count} ${item.baseUnit})</option>`;
+          })
+          .join('');
+
+        optionsHtml += `<option value="MANUAL">Masukkan Jumlah Manual (${item.baseUnit})</option>`;
+
+        const subtotalClass = isKurangan ? 'row-subtotal subtotal-kurangan' : 'row-subtotal';
+
+        row.innerHTML = `
+          <input type="number" class="qty-input" value="${defaultQty}" step="any" min="0" placeholder="0">
+          <select class="unit-select">${optionsHtml}</select>
+          <span class="${subtotalClass}">0 ${item.baseUnit}</span>
+          <button class="btn-remove-row" title="Hapus Baris">${ICON_TRASH}</button>
+        `;
+
+        rowsContainer.appendChild(row);
+
+        const qtyInput = row.querySelector('.qty-input');
+        const unitSelect = row.querySelector('.unit-select');
+        const removeBtn = row.querySelector('.btn-remove-row');
+
+        qtyInput.addEventListener('input', () => updateCardTotal(card, item, isKurangan));
+        unitSelect.addEventListener('change', () => {
+          if (!qtyInput.value || parseFloat(qtyInput.value) === 0) {
+            qtyInput.value = 1;
+          }
+          updateCardTotal(card, item, isKurangan);
+        });
+
+        removeBtn.addEventListener('click', () => {
+          if (rowsContainer.children.length > 1) {
+            row.remove();
+          } else {
+            qtyInput.value = 0;
+          }
+          updateCardTotal(card, item, isKurangan);
+        });
+
+        updateCardTotal(card, item, isKurangan);
+      }
+
+      resetCardBtn.addEventListener('click', () => {
+        rowsContainer.innerHTML = '';
+        createRow(0);
+      });
+
+      addRowBtn.addEventListener('click', () => {
+        createRow(1);
+      });
+
+      // Default awal: Tab Stok bernilai 1, Tab Kurangan bernilai 0
+      createRow(isKurangan ? 0 : 1);
+    });
+  }
+
+  // Hitung total per kartu
+  function updateCardTotal(card, item, isKurangan = false) {
     const rowsContainer = card.querySelector('.rows-container');
     const badge = card.querySelector('.card-total-badge');
     const rows = rowsContainer.querySelectorAll('.input-row');
