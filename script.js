@@ -45,15 +45,15 @@ const ICON_TRASH = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" 
 
 document.addEventListener('DOMContentLoaded', () => {
   const inventoryGrid = document.getElementById('inventory-grid');
-  const shortageGrid = document.getElementById('shortage-grid');
+  const kuranganTbody = document.getElementById('kurangan-tbody');
 
-  // Render Grid Stok
-  renderGrid(inventoryGrid, false);
+  // Render Tab Stok (Kartu Dinamis)
+  renderStokGrid(inventoryGrid);
 
-  // Render Grid Kurangan (Sama persis list barangnya)
-  renderGrid(shortageGrid, true);
+  // Render Tab Kurangan (Tabel Perkalian Simpel)
+  renderKuranganTable(kuranganTbody);
 
-  // Tab Switcher Handler
+  // Switch Tab Handler
   const navBtns = document.querySelectorAll('.nav-btn');
   const tabContents = document.querySelectorAll('.tab-content');
 
@@ -63,63 +63,49 @@ document.addEventListener('DOMContentLoaded', () => {
       tabContents.forEach(tc => tc.classList.remove('active'));
 
       btn.classList.add('active');
-      const targetTab = btn.dataset.tab;
-      document.getElementById(targetTab).classList.add('active');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      document.getElementById(btn.dataset.tab).classList.add('active');
     });
   });
 
-  // Fungsi pembuat Kartu Grid (berlaku untuk Stok & Kurangan)
-  function renderGrid(containerElement, isKurangan = false) {
+  // Render Grid Stok Gudang
+  function renderStokGrid(container) {
     inventoryData.forEach((item, index) => {
       const card = document.createElement('div');
       card.className = 'neu-card';
-
-      const badgeClass = isKurangan ? 'card-total-badge badge-kurangan' : 'card-total-badge';
-      const btnAddClass = isKurangan ? 'btn-add-row btn-kurangan' : 'btn-add-row';
 
       card.innerHTML = `
         <div class="card-header">
           <span class="card-title">${item.name}</span>
           <div class="header-actions">
-            <button class="btn-reset-card" title="Reset Barang Ini">
-              ${ICON_REFRESH} Reset
-            </button>
-            <span class="${badgeClass}">0 ${item.baseUnit}</span>
+            <button class="btn-reset-card" title="Reset Barang Ini">${ICON_REFRESH} Reset</button>
+            <span class="card-total-badge">0 ${item.baseUnit}</span>
           </div>
         </div>
         <div class="rows-container"></div>
-        <button class="${btnAddClass}">
-          ${ICON_PLUS} Tambah Baris Input
-        </button>
+        <button class="btn-add-row">${ICON_PLUS} Tambah Baris Input</button>
       `;
 
-      containerElement.appendChild(card);
+      container.appendChild(card);
 
       const rowsContainer = card.querySelector('.rows-container');
       const addRowBtn = card.querySelector('.btn-add-row');
       const resetCardBtn = card.querySelector('.btn-reset-card');
 
-      function createRow(defaultQty = 0) {
+      function createRow(defaultQty = 1) {
         const row = document.createElement('div');
         row.className = 'input-row';
 
         const standardUnits = Object.keys(item.conversions);
         let optionsHtml = standardUnits
-          .map(u => {
-            const count = item.conversions[u];
-            return `<option value="${u}">${u} (${count} ${item.baseUnit})</option>`;
-          })
+          .map(u => `<option value="${u}">${u} (${item.conversions[u]} ${item.baseUnit})</option>`)
           .join('');
 
         optionsHtml += `<option value="MANUAL">Masukkan Jumlah Manual (${item.baseUnit})</option>`;
 
-        const subtotalClass = isKurangan ? 'row-subtotal subtotal-kurangan' : 'row-subtotal';
-
         row.innerHTML = `
-          <input type="number" class="qty-input" value="${defaultQty}" step="any" min="0" placeholder="0">
+          <input type="number" class="qty-input" value="${defaultQty}" step="any" min="0" placeholder="1">
           <select class="unit-select">${optionsHtml}</select>
-          <span class="${subtotalClass}">0 ${item.baseUnit}</span>
+          <span class="row-subtotal">0 ${item.baseUnit}</span>
           <button class="btn-remove-row" title="Hapus Baris">${ICON_TRASH}</button>
         `;
 
@@ -129,12 +115,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const unitSelect = row.querySelector('.unit-select');
         const removeBtn = row.querySelector('.btn-remove-row');
 
-        qtyInput.addEventListener('input', () => updateCardTotal(card, item, isKurangan));
+        qtyInput.addEventListener('input', () => updateCardTotal(card, item));
         unitSelect.addEventListener('change', () => {
-          if (!qtyInput.value || parseFloat(qtyInput.value) === 0) {
-            qtyInput.value = 1;
-          }
-          updateCardTotal(card, item, isKurangan);
+          if (!qtyInput.value || parseFloat(qtyInput.value) === 0) qtyInput.value = 1;
+          updateCardTotal(card, item);
         });
 
         removeBtn.addEventListener('click', () => {
@@ -143,10 +127,10 @@ document.addEventListener('DOMContentLoaded', () => {
           } else {
             qtyInput.value = 0;
           }
-          updateCardTotal(card, item, isKurangan);
+          updateCardTotal(card, item);
         });
 
-        updateCardTotal(card, item, isKurangan);
+        updateCardTotal(card, item);
       }
 
       resetCardBtn.addEventListener('click', () => {
@@ -154,17 +138,64 @@ document.addEventListener('DOMContentLoaded', () => {
         createRow(0);
       });
 
-      addRowBtn.addEventListener('click', () => {
-        createRow(1);
-      });
+      addRowBtn.addEventListener('click', () => createRow(1));
 
-      // Default awal: Tab Stok bernilai 1, Tab Kurangan bernilai 0
-      createRow(isKurangan ? 0 : 1);
+      createRow(1);
     });
   }
 
-  // Hitung total per kartu
-  function updateCardTotal(card, item, isKurangan = false) {
+  // Render Tabel Kurangan (Barang x Satuan = Total Kurangan)
+  function renderKuranganTable(tbody) {
+    inventoryData.forEach(item => {
+      const tr = document.createElement('tr');
+
+      const standardUnits = Object.keys(item.conversions);
+      let optionsHtml = standardUnits
+        .map(u => `<option value="${u}">${u} (${item.conversions[u]} ${item.baseUnit})</option>`)
+        .join('');
+
+      optionsHtml += `<option value="MANUAL">Manual (${item.baseUnit})</option>`;
+
+      tr.innerHTML = `
+        <td class="item-name-cell">${item.name}</td>
+        <td style="width: 70px;">
+          <input type="number" class="qty-input-kurangan" value="0" step="any" min="0" placeholder="0">
+        </td>
+        <td>
+          <select class="unit-select-kurangan">${optionsHtml}</select>
+        </td>
+        <td class="text-right">
+          <span class="total-kurangan-text">0 ${item.baseUnit}</span>
+        </td>
+      `;
+
+      tbody.appendChild(tr);
+
+      const qtyInput = tr.querySelector('.qty-input-kurangan');
+      const unitSelect = tr.querySelector('.unit-select-kurangan');
+      const totalText = tr.querySelector('.total-kurangan-text');
+
+      function calcKurangan() {
+        const qty = parseFloat(qtyInput.value) || 0;
+        const selectedUnit = unitSelect.value;
+        let subtotal = 0;
+
+        if (selectedUnit === "MANUAL") {
+          subtotal = qty;
+        } else {
+          const multiplier = item.conversions[selectedUnit] || 1;
+          subtotal = qty * multiplier;
+        }
+
+        totalText.textContent = `${formatNumber(subtotal)} ${item.baseUnit}`;
+      }
+
+      qtyInput.addEventListener('input', calcKurangan);
+      unitSelect.addEventListener('change', calcKurangan);
+    });
+  }
+
+  function updateCardTotal(card, item) {
     const rowsContainer = card.querySelector('.rows-container');
     const badge = card.querySelector('.card-total-badge');
     const rows = rowsContainer.querySelectorAll('.input-row');
