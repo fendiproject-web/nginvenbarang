@@ -47,10 +47,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const inventoryGrid = document.getElementById('inventory-grid');
   const kuranganTbody = document.getElementById('kurangan-tbody');
 
-  // Render Tab Stok (Kartu Dinamis)
+  // Render Stok Grid & Tabel Kurangan
   renderStokGrid(inventoryGrid);
-
-  // Render Tab Kurangan (Tabel Perkalian Simpel)
   renderKuranganTable(kuranganTbody);
 
   // Switch Tab Handler
@@ -144,25 +142,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Render Tabel Kurangan (Barang x Satuan = Total Kurangan)
+  // Render Tabel Kurangan (Manual Perkalian Input 1 x Input 2 = Total)
   function renderKuranganTable(tbody) {
     inventoryData.forEach(item => {
       const tr = document.createElement('tr');
 
-      const standardUnits = Object.keys(item.conversions);
-      let optionsHtml = standardUnits
-        .map(u => `<option value="${u}">${u} (${item.conversions[u]} ${item.baseUnit})</option>`)
-        .join('');
-
-      optionsHtml += `<option value="MANUAL">Manual (${item.baseUnit})</option>`;
-
       tr.innerHTML = `
         <td class="item-name-cell">${item.name}</td>
         <td style="width: 70px;">
-          <input type="number" class="qty-input-kurangan" value="0" step="any" min="0" placeholder="0">
+          <input type="number" class="val1-input" value="0" step="any" min="0" placeholder="0">
         </td>
-        <td>
-          <select class="unit-select-kurangan">${optionsHtml}</select>
+        <td class="text-center" style="width: 20px; font-weight: 800; color: var(--text-muted);">×</td>
+        <td style="width: 70px;">
+          <input type="number" class="val2-input" value="0" step="any" min="0" placeholder="0">
         </td>
         <td class="text-right">
           <span class="total-kurangan-text">0 ${item.baseUnit}</span>
@@ -171,27 +163,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
       tbody.appendChild(tr);
 
-      const qtyInput = tr.querySelector('.qty-input-kurangan');
-      const unitSelect = tr.querySelector('.unit-select-kurangan');
+      const val1Input = tr.querySelector('.val1-input');
+      const val2Input = tr.querySelector('.val2-input');
       const totalText = tr.querySelector('.total-kurangan-text');
 
       function calcKurangan() {
-        const qty = parseFloat(qtyInput.value) || 0;
-        const selectedUnit = unitSelect.value;
-        let subtotal = 0;
+        const v1 = parseFloat(val1Input.value) || 0;
+        const v2 = parseFloat(val2Input.value) || 0;
+        const result = v1 * v2;
 
-        if (selectedUnit === "MANUAL") {
-          subtotal = qty;
-        } else {
-          const multiplier = item.conversions[selectedUnit] || 1;
-          subtotal = qty * multiplier;
-        }
-
-        totalText.textContent = `${formatNumber(subtotal)} ${item.baseUnit}`;
+        totalText.textContent = `${formatNumber(result)} ${item.baseUnit}`;
       }
 
-      qtyInput.addEventListener('input', calcKurangan);
-      unitSelect.addEventListener('change', calcKurangan);
+      val1Input.addEventListener('input', calcKurangan);
+      val2Input.addEventListener('input', calcKurangan);
     });
   }
 
