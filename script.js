@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Render Tabel Kurangan (Manual Perkalian Input 1 x Input 2 = Total)
+  // Render Tabel Kurangan (Pengurangan: Input 1 - Input 2 = Total)
   function renderKuranganTable(tbody) {
     inventoryData.forEach(item => {
       const tr = document.createElement('tr');
@@ -150,11 +150,11 @@ document.addEventListener('DOMContentLoaded', () => {
       tr.innerHTML = `
         <td class="item-name-cell">${item.name}</td>
         <td style="width: 70px;">
-          <input type="number" class="val1-input" value="0" step="any" min="0" placeholder="0">
+          <input type="number" class="val1-input" value="0" step="any" placeholder="0">
         </td>
-        <td class="text-center" style="width: 20px; font-weight: 800; color: var(--text-muted);">×</td>
+        <td class="text-center" style="width: 20px; font-weight: 800; color: var(--text-muted);">-</td>
         <td style="width: 70px;">
-          <input type="number" class="val2-input" value="0" step="any" min="0" placeholder="0">
+          <input type="number" class="val2-input" value="0" step="any" placeholder="0">
         </td>
         <td class="text-right">
           <span class="total-kurangan-text">0 ${item.baseUnit}</span>
@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
       function calcKurangan() {
         const v1 = parseFloat(val1Input.value) || 0;
         const v2 = parseFloat(val2Input.value) || 0;
-        const result = v1 * v2;
+        const result = v1 - v2;
 
         totalText.textContent = `${formatNumber(result)} ${item.baseUnit}`;
       }
