@@ -1,4 +1,3 @@
-// Database konversi barang gudang
 const inventoryData = [
   { name: "AYAM BESAR CUT 9", baseUnit: "PCS", conversions: { "PACK": 10, "PCS": 1 } },
   { name: "AYAM KECIL CUT 9", baseUnit: "PCS", conversions: { "PACK": 8, "PCS": 1 } },
@@ -43,13 +42,17 @@ const ICON_REFRESH = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none
 const ICON_PLUS = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>`;
 const ICON_TRASH = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>`;
 
+// Menyimpan referensi elemen input 2 dan fungsi hitung kurangan per barang
+const kuranganRefs = [];
+
 document.addEventListener('DOMContentLoaded', () => {
   const inventoryGrid = document.getElementById('inventory-grid');
   const kuranganTbody = document.getElementById('kurangan-tbody');
 
-  // Render Stok Grid & Tabel Kurangan
-  renderStokGrid(inventoryGrid);
+  // Render Tabel Kurangan lebih dulu agar kaitan ref tersambung
   renderKuranganTable(kuranganTbody);
+  // Render Grid Stok Gudang
+  renderStokGrid(inventoryGrid);
 
   // Switch Tab Handler
   const navBtns = document.querySelectorAll('.nav-btn');
@@ -113,10 +116,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const unitSelect = row.querySelector('.unit-select');
         const removeBtn = row.querySelector('.btn-remove-row');
 
-        qtyInput.addEventListener('input', () => updateCardTotal(card, item));
+        qtyInput.addEventListener('input', () => updateCardTotal(card, item, index));
         unitSelect.addEventListener('change', () => {
           if (!qtyInput.value || parseFloat(qtyInput.value) === 0) qtyInput.value = 1;
-          updateCardTotal(card, item);
+          updateCardTotal(card, item, index);
         });
 
         removeBtn.addEventListener('click', () => {
@@ -125,10 +128,10 @@ document.addEventListener('DOMContentLoaded', () => {
           } else {
             qtyInput.value = 0;
           }
-          updateCardTotal(card, item);
+          updateCardTotal(card, item, index);
         });
 
-        updateCardTotal(card, item);
+        updateCardTotal(card, item, index);
       }
 
       resetCardBtn.addEventListener('click', () => {
@@ -142,9 +145,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Render Tabel Kurangan (Pengurangan: Input 1 - Input 2 = Total)
+  // Render Tabel Kurangan (Input 1 - Input 2 [Stok Otomatis] = Total Kurangan)
   function renderKuranganTable(tbody) {
-    inventoryData.forEach(item => {
+    inventoryData.forEach((item, index) => {
       const tr = document.createElement('tr');
 
       tr.innerHTML = `
@@ -154,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </td>
         <td class="text-center" style="width: 20px; font-weight: 800; color: var(--text-muted);">-</td>
         <td style="width: 70px;">
-          <input type="number" class="val2-input" value="0" step="any" placeholder="0">
+          <input type="number" class="val2-input" value="0" step="any" placeholder="0" readonly title="Jumlah otomatis dari Stok Gudang">
         </td>
         <td class="text-right">
           <span class="total-kurangan-text">0 ${item.baseUnit}</span>
@@ -176,11 +179,17 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       val1Input.addEventListener('input', calcKurangan);
-      val2Input.addEventListener('input', calcKurangan);
+
+      // Simpan referensi input 2 dan penentu hitungannya
+      kuranganRefs[index] = {
+        val2Input: val2Input,
+        calcKurangan: calcKurangan
+      };
     });
   }
 
-  function updateCardTotal(card, item) {
+  // Hitung total Stok per kartu & Sinkronkan ke Input 2 Kurangan
+  function updateCardTotal(card, item, itemIndex) {
     const rowsContainer = card.querySelector('.rows-container');
     const badge = card.querySelector('.card-total-badge');
     const rows = rowsContainer.querySelectorAll('.input-row');
@@ -205,6 +214,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     badge.textContent = `${formatNumber(totalBase)} ${item.baseUnit}`;
+
+    // Otomatis sinkronkan nilai total stok ke Input 2 Kurangan
+    if (kuranganRefs[itemIndex]) {
+      kuranganRefs[itemIndex].val2Input.value = totalBase;
+      kuranganRefs[itemIndex].calcKurangan();
+    }
   }
 
   function formatNumber(val) {
