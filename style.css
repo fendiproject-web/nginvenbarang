@@ -21,6 +21,31 @@
   margin: 0;
   padding: 0;
   font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+
+  /* Menghilangkan kotak highlight saat di-tap/klik di HP */
+  -webkit-tap-highlight-color: transparent;
+
+  /* Menghilangkan menu pop-up bawaan browser saat ditekan lama */
+  -webkit-touch-callout: none;
+
+  /* Mencegah seleksi teks/blok warna biru saat ditekan lama */
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Mengizinkan pengetikan & seleksi teks khusus pada form input & textarea */
+input, textarea {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* Menghilangkan garis kotak outline (fokus) saat tombol atau elemen di-klik */
+button, input, select, textarea, a {
+  outline: none !important;
+}
+
+button:focus, input:focus, select:focus, textarea:focus, a:focus {
+  outline: none !important;
 }
 
 body {
@@ -156,7 +181,6 @@ input[type="number"], input[type="text"], select {
   padding: 7px 8px;
   font-size: 0.78rem;
   font-weight: 600;
-  outline: none;
   width: 100%;
   transition: all 0.2s ease;
 }
