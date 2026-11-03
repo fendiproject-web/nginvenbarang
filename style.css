@@ -37,27 +37,7 @@ body {
   margin: 0 auto;
 }
 
-/* Banner Header Proporsional */
-.banner-header {
-  width: 100%;
-  max-height: 200px;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: var(--neu-shadow-flat);
-  background: var(--bg-color);
-  margin-bottom: 20px;
-}
-
-.banner-img {
-  width: 100%;
-  height: auto;
-  max-height: 200px;
-  object-fit: cover;
-  object-position: center;
-  display: block;
-}
-
-/* Grid Layout Proporsional (auto-fit agar kartu memenuhi selebar banner) */
+/* Grid Layout Proporsional */
 .inventory-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -236,11 +216,8 @@ input[type="number"]:focus, select:focus {
   box-shadow: var(--neu-shadow-btn-pressed);
 }
 
-/* Responsif khusus Layar HP */
+/* Responsif Layar HP */
 @media (max-width: 640px) {
-  .banner-header, .banner-img {
-    max-height: 140px;
-  }
   .inventory-grid {
     grid-template-columns: 1fr;
   }
