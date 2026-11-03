@@ -28,7 +28,7 @@ body {
   background-color: var(--bg-color);
   color: var(--text-main);
   min-height: 100vh;
-  padding: 20px 14px;
+  padding: 16px 12px;
 }
 
 .app-container {
@@ -36,11 +36,11 @@ body {
   margin: 0 auto;
 }
 
-/* Banner Header (Presisi Rasio 1200x480 & Pas Lebar Kontainer) */
+/* Container Banner Ramping */
 .banner-header {
   width: 100%;
-  aspect-ratio: 1200 / 480;
-  margin-bottom: 20px;
+  height: 160px;
+  margin-bottom: 16px;
   border-radius: 16px;
   overflow: hidden;
   box-shadow: var(--neu-shadow-flat);
@@ -51,6 +51,7 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
   display: block;
   border-radius: 16px;
 }
@@ -233,7 +234,11 @@ input[type="number"]:focus, select:focus {
   box-shadow: var(--neu-shadow-btn-pressed);
 }
 
+/* Responsif khusus HP agar banner pas & proporsional */
 @media (max-width: 640px) {
+  .banner-header {
+    height: 110px;
+  }
   .inventory-grid {
     grid-template-columns: 1fr;
   }
