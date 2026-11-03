@@ -3,14 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  <title>Pencatatan Sisa & Kurangan Gudang</title>
+  <title>Sistem Gudang & Laporan Sales GeprekinAja</title>
   <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 <body>
 
   <div class="app-container">
-    <!-- Banner Utama -->
+    <!-- Banner Utama (Selalu Muncul) -->
     <div class="banner-box">
       <picture>
         <source srcset="banner.webp" type="image/webp">
@@ -18,12 +19,12 @@
       </picture>
     </div>
 
-    <!-- Tab 1: Stok Gudang -->
+    <!-- TAB 1: STOK GUDANG -->
     <div id="tab-stok" class="tab-content active">
       <main id="inventory-grid" class="inventory-grid"></main>
     </div>
 
-    <!-- Tab 2: Kurangan Stok -->
+    <!-- TAB 2: KURANGAN STOK -->
     <div id="tab-kurangan" class="tab-content">
       <div class="kurangan-card neu-card">
         <div class="table-responsive">
@@ -42,9 +43,376 @@
         </div>
       </div>
     </div>
+
+    <!-- TAB 3: LAPORAN SALES (KODE GEPREKINAJA) -->
+    <div id="tab-sales" class="tab-content">
+      <div class="sales-container neu-card">
+        
+        <!-- Header Sales -->
+        <div class="sales-header">
+          <div class="badge"><i class="fas fa-chart-line"></i> Laporan Harian By Fendi</div>
+          <h1><i class="fas fa-hand-holding-heart icon-heart"></i> <span>LAPORAN SALES</span> GEPREKINAJA</h1>
+          <div class="subtitle">
+            <i class="fas fa-map-pin"></i> Waru Pamekasan
+            <span class="dot">·</span>
+            <span id="tanggalDisplay"></span>
+            <input type="date" id="tanggalInput" onchange="ubahTanggal()" />
+          </div>
+        </div>
+
+        <!-- Sub Tab Navigation Sales -->
+        <div class="tab-container">
+          <button class="tab-btn active" data-subtab="rumus1" onclick="switchSubTab('rumus1')">
+            <i class="fas fa-calculator"></i> RUMUS 1
+          </button>
+          <button class="tab-btn" data-subtab="rumus2" onclick="switchSubTab('rumus2')">
+            <i class="fas fa-chart-simple"></i> RUMUS 2
+          </button>
+        </div>
+
+        <!-- SUB TAB: RUMUS 1 -->
+        <div id="rumus1" class="subtab-content active">
+          <!-- LAPORAN BULANAN -->
+          <div class="section">
+            <div class="section-title"><i class="fas fa-calendar-alt"></i> Laporan Sales Bulanan</div>
+            <div class="formula-row">
+              <div class="formula-label"><i class="fas fa-bullseye"></i>Target Sales Bulanan</div>
+              <div class="formula-input">
+                <input type="number" id="targetBulanan" value="104893180" oninput="updateOutput()" />
+                <button class="btn-save-target" onclick="simpanTarget('targetBulanan', 'targetBulananSaved')">
+                  <i class="fas fa-save"></i> Simpan
+                </button>
+              </div>
+              <div class="formula-result">Rp <span id="targetBulananDisplay">104.893.180</span></div>
+            </div>
+
+            <div class="formula-row">
+              <div class="formula-label"><i class="fas fa-calculator"></i>Estimasi Sales Bulanan <span>(Avg Omset × Hari)</span></div>
+              <div class="formula-input"><input type="number" id="estimasiInput1" placeholder="Avg Omset" oninput="updateOutput()" disabled /></div>
+              <span class="formula-operator">×</span>
+              <div class="formula-input"><input type="number" id="estimasiInput2" placeholder="Hari" oninput="updateOutput()" disabled /></div>
+              <span class="formula-operator">=</span>
+              <div class="formula-result"><span class="value-no-rp" id="estimasiHasil">0</span></div>
+            </div>
+
+            <div class="formula-row">
+              <div class="formula-label"><i class="fas fa-chart-simple"></i>Total Sales Bulanan <span>(Sales Bulanan + Sales Hari Ini)</span></div>
+              <div class="formula-input"><input type="number" id="totalSalesInput1" placeholder="Sales Bulanan" oninput="updateOutput()" /></div>
+              <span class="formula-operator">+</span>
+              <div class="formula-input"><input type="number" id="totalSalesInput2" placeholder="Sales Hari Ini" oninput="updateOutput()" disabled /></div>
+              <span class="formula-operator">=</span>
+              <div class="formula-result"><span class="value-no-rp" id="totalSalesHasil">0</span></div>
+            </div>
+
+            <div class="formula-row">
+              <div class="formula-label"><i class="fas fa-coins"></i>Total CU <span>(Total CU Bulanan + CU Hari Ini)</span></div>
+              <div class="formula-input"><input type="number" id="totalCUInput1" placeholder="Total CU Bulanan" oninput="updateOutput()" /></div>
+              <span class="formula-operator">+</span>
+              <div class="formula-input"><input type="number" id="totalCUInput2" placeholder="CU Hari Ini" oninput="updateOutput()" disabled /></div>
+              <span class="formula-operator">=</span>
+              <div class="formula-result"><span class="value-no-rp" id="totalCUHasil">0</span></div>
+            </div>
+
+            <div class="formula-row">
+              <div class="formula-label"><i class="fas fa-arrow-trend-up"></i>Avg Omset <span>(Sales Bulanan ÷ Tanggal)</span></div>
+              <div class="formula-input"><input type="number" id="avgOmsetInput1" placeholder="Sales Bulanan" oninput="updateOutput()" disabled /></div>
+              <span class="formula-operator">÷</span>
+              <div class="formula-input"><input type="number" id="avgOmsetInput2" placeholder="Tanggal" oninput="updateOutput()" disabled /></div>
+              <span class="formula-operator">=</span>
+              <div class="formula-result"><span class="value-no-rp" id="avgOmsetHasil">0</span></div>
+            </div>
+
+            <div class="formula-row">
+              <div class="formula-label"><i class="fas fa-arrow-trend-down"></i>Avg CU <span>(Total CU ÷ Tanggal)</span></div>
+              <div class="formula-input"><input type="number" id="avgCUInput1" placeholder="Total CU" oninput="updateOutput()" disabled /></div>
+              <span class="formula-operator">÷</span>
+              <div class="formula-input"><input type="number" id="avgCUInput2" placeholder="Tanggal" oninput="updateOutput()" disabled /></div>
+              <span class="formula-operator">=</span>
+              <div class="formula-result"><span class="value-no-rp" id="avgCUHasil">0</span></div>
+            </div>
+          </div>
+
+          <!-- LAPORAN HARIAN -->
+          <div class="section">
+            <div class="section-title"><i class="fas fa-calendar-day"></i> Laporan Sales Harian</div>
+            <div class="formula-row">
+              <div class="formula-label"><i class="fas fa-bullseye"></i>Target Sales Harian</div>
+              <div class="formula-input">
+                <input type="number" id="targetHarian" value="3383650" oninput="updateOutput()" />
+                <button class="btn-save-target" onclick="simpanTarget('targetHarian', 'targetHarianSaved')">
+                  <i class="fas fa-save"></i> Simpan
+                </button>
+              </div>
+              <div class="formula-result">Rp <span id="targetHarianDisplay">3.383.650</span></div>
+            </div>
+
+            <div class="formula-row">
+              <div class="formula-label"><i class="fas fa-cash-register"></i>Sales <span>(S1 + S2)</span></div>
+              <div class="formula-input"><input type="number" id="salesS1" placeholder="S1" oninput="updateOutput()" /></div>
+              <span class="formula-operator">+</span>
+              <div class="formula-input"><input type="number" id="salesS2" placeholder="S2" oninput="updateOutput()" /></div>
+              <span class="formula-operator">=</span>
+              <div class="formula-result"><span class="value-no-rp" id="salesHasil">0</span></div>
+            </div>
+
+            <div class="formula-row">
+              <div class="formula-label"><i class="fas fa-receipt"></i>CU <span>(S1 + S2)</span></div>
+              <div class="formula-input"><input type="number" id="cuS1" placeholder="S1" oninput="updateOutput()" /></div>
+              <span class="formula-operator">+</span>
+              <div class="formula-input"><input type="number" id="cuS2" placeholder="S2" oninput="updateOutput()" /></div>
+              <span class="formula-operator">=</span>
+              <div class="formula-result"><span class="value-no-rp" id="cuHasil">0</span></div>
+            </div>
+
+            <div class="formula-row">
+              <div class="formula-label"><i class="fas fa-chart-pie"></i>Avg <span>(Sales ÷ CU)</span></div>
+              <div class="formula-input"><input type="number" id="avgInput1" placeholder="Sales" oninput="updateOutput()" disabled /></div>
+              <span class="formula-operator">÷</span>
+              <div class="formula-input"><input type="number" id="avgInput2" placeholder="CU" oninput="updateOutput()" disabled /></div>
+              <span class="formula-operator">=</span>
+              <div class="formula-result"><span class="value-no-rp" id="avgHasil">0</span></div>
+            </div>
+          </div>
+
+          <!-- MENU BARU -->
+          <div class="section">
+            <div class="section-title"><i class="fas fa-utensils"></i> Menu Baru</div>
+            <div id="menuContainer"></div>
+          </div>
+
+          <!-- ECOMMERCE -->
+          <div class="section">
+            <div class="section-title"><i class="fas fa-store"></i> Ecommerce & Transfer</div>
+            <div id="ecommerceContainer"></div>
+          </div>
+
+          <!-- WASTE -->
+          <div class="section">
+            <div class="section-title"><i class="fas fa-trash-can"></i> Waste</div>
+            <div class="inline-group">
+              <div class="item"><i class="fas fa-drumstick-bite"></i><label>AB</label><input type="number" id="ab" oninput="updateOutput()" placeholder="pcs" /></div>
+              <div class="item"><i class="fas fa-drumstick"></i><label>AK</label><input type="number" id="ak" oninput="updateOutput()" placeholder="pcs" /></div>
+              <div class="item"><i class="fas fa-bowl-rice"></i><label>Nasi</label><input type="number" id="nasi" oninput="updateOutput()" placeholder="porsi" /></div>
+            </div>
+          </div>
+
+          <!-- CUACA -->
+          <div class="section">
+            <div class="section-title"><i class="fas fa-cloud-sun"></i> Cuaca</div>
+            <div class="inline-group">
+              <div class="item"><i class="fas fa-sun"></i><label>Pagi</label><input type="text" id="pagi" value="Cerah" oninput="updateOutput()" /></div>
+              <div class="item"><i class="fas fa-sun"></i><label>Siang</label><input type="text" id="siang" value="Panas" oninput="updateOutput()" /></div>
+              <div class="item"><i class="fas fa-cloud-sun"></i><label>Sore</label><input type="text" id="sore" value="Cerah" oninput="updateOutput()" /></div>
+              <div class="item"><i class="fas fa-cloud-moon"></i><label>Malam</label><input type="text" id="malam" value="Mendung" oninput="updateOutput()" /></div>
+            </div>
+          </div>
+
+          <!-- PENGELUARAN -->
+          <div class="section">
+            <div class="section-title">
+              <span><i class="fas fa-money-bill-wave"></i> Pengeluaran</span>
+              <button class="btn-add" onclick="tambahPengeluaran()"><i class="fas fa-plus"></i> Tambah</button>
+            </div>
+            <div id="pengeluaranContainer"></div>
+            <div class="total-semua">
+              <span class="label"><i class="fas fa-calculator"></i> Total Semua Pengeluaran</span>
+              <span class="value" id="totalPengeluaran">Rp 0</span>
+            </div>
+          </div>
+
+          <!-- TIM -->
+          <div class="section">
+            <div class="section-title">
+              <span><i class="fas fa-users"></i> Tim yang Bertugas</span>
+              <button class="btn-add" onclick="tambahTim()"><i class="fas fa-plus"></i> Tambah</button>
+            </div>
+            <div id="timContainer"></div>
+          </div>
+        </div>
+
+        <!-- SUB TAB: RUMUS 2 -->
+        <div id="rumus2" class="subtab-content">
+          <!-- LAPORAN BULANAN RUMUS 2 -->
+          <div class="section">
+            <div class="section-title"><i class="fas fa-calendar-alt"></i> Laporan Sales Bulanan</div>
+            <div class="formula-row">
+              <div class="formula-label"><i class="fas fa-bullseye"></i>Target Sales Bulanan</div>
+              <div class="formula-input">
+                <input type="number" id="targetBulanan2" value="104893180" oninput="updateOutput2()" />
+                <button class="btn-save-target" onclick="simpanTarget('targetBulanan2', 'targetBulananSaved')">
+                  <i class="fas fa-save"></i> Simpan
+                </button>
+              </div>
+              <div class="formula-result">Rp <span id="targetBulananDisplay2">104.893.180</span></div>
+            </div>
+
+            <div class="formula-row">
+              <div class="formula-label"><i class="fas fa-calculator"></i>Estimasi Sales Bulanan <span>(Sales Hari Ini × Sisa Hari + Sales Bulanan)</span></div>
+              <div class="formula-input"><input type="number" id="estimasiInput1_2" placeholder="Sales Hari Ini" oninput="updateOutput2()" disabled /></div>
+              <span class="formula-operator">×</span>
+              <div class="formula-input"><input type="number" id="estimasiInput2_2" placeholder="Sisa Hari" oninput="updateOutput2()" disabled /></div>
+              <span class="formula-operator">+</span>
+              <div class="formula-input"><input type="number" id="estimasiInput3_2" placeholder="Sales Bulanan" oninput="updateOutput2()" disabled /></div>
+              <span class="formula-operator">=</span>
+              <div class="formula-result"><span class="value-no-rp" id="estimasiHasil2">0</span></div>
+            </div>
+
+            <div class="formula-row">
+              <div class="formula-label"><i class="fas fa-chart-simple"></i>Total Sales Bulanan <span>(Sales Bulanan + Sales Hari Ini)</span></div>
+              <div class="formula-input"><input type="number" id="totalSalesInput1_2" placeholder="Sales Bulanan" oninput="updateOutput2()" /></div>
+              <span class="formula-operator">+</span>
+              <div class="formula-input"><input type="number" id="totalSalesInput2_2" placeholder="Sales Hari Ini" oninput="updateOutput2()" disabled /></div>
+              <span class="formula-operator">=</span>
+              <div class="formula-result"><span class="value-no-rp" id="totalSalesHasil2">0</span></div>
+            </div>
+
+            <div class="formula-row">
+              <div class="formula-label"><i class="fas fa-coins"></i>Total CU <span>(Total CU Bulanan + CU Hari Ini)</span></div>
+              <div class="formula-input"><input type="number" id="totalCUInput1_2" placeholder="Total CU Bulanan" oninput="updateOutput2()" /></div>
+              <span class="formula-operator">+</span>
+              <div class="formula-input"><input type="number" id="totalCUInput2_2" placeholder="CU Hari Ini" oninput="updateOutput2()" disabled /></div>
+              <span class="formula-operator">=</span>
+              <div class="formula-result"><span class="value-no-rp" id="totalCUHasil2">0</span></div>
+            </div>
+
+            <div class="formula-row">
+              <div class="formula-label"><i class="fas fa-arrow-trend-up"></i>Avg Omset <span>(Sales Bulanan ÷ Tanggal)</span></div>
+              <div class="formula-input"><input type="number" id="avgOmsetInput1_2" placeholder="Sales Bulanan" oninput="updateOutput2()" disabled /></div>
+              <span class="formula-operator">÷</span>
+              <div class="formula-input"><input type="number" id="avgOmsetInput2_2" placeholder="Tanggal" oninput="updateOutput2()" disabled /></div>
+              <span class="formula-operator">=</span>
+              <div class="formula-result"><span class="value-no-rp" id="avgOmsetHasil2">0</span></div>
+            </div>
+
+            <div class="formula-row">
+              <div class="formula-label"><i class="fas fa-arrow-trend-down"></i>Avg CU <span>(Total CU ÷ Tanggal)</span></div>
+              <div class="formula-input"><input type="number" id="avgCUInput1_2" placeholder="Total CU" oninput="updateOutput2()" disabled /></div>
+              <span class="formula-operator">÷</span>
+              <div class="formula-input"><input type="number" id="avgCUInput2_2" placeholder="Tanggal" oninput="updateOutput2()" disabled /></div>
+              <span class="formula-operator">=</span>
+              <div class="formula-result"><span class="value-no-rp" id="avgCUHasil2">0</span></div>
+            </div>
+          </div>
+
+          <!-- LAPORAN HARIAN RUMUS 2 -->
+          <div class="section">
+            <div class="section-title"><i class="fas fa-calendar-day"></i> Laporan Sales Harian</div>
+            <div class="formula-row">
+              <div class="formula-label"><i class="fas fa-bullseye"></i>Target Sales Harian</div>
+              <div class="formula-input">
+                <input type="number" id="targetHarian2" value="3383650" oninput="updateOutput2()" />
+                <button class="btn-save-target" onclick="simpanTarget('targetHarian2', 'targetHarianSaved')">
+                  <i class="fas fa-save"></i> Simpan
+                </button>
+              </div>
+              <div class="formula-result">Rp <span id="targetHarianDisplay2">3.383.650</span></div>
+            </div>
+
+            <div class="formula-row">
+              <div class="formula-label"><i class="fas fa-cash-register"></i>Sales <span>(S1 + S2)</span></div>
+              <div class="formula-input"><input type="number" id="salesS1_2" placeholder="S1" oninput="updateOutput2()" /></div>
+              <span class="formula-operator">+</span>
+              <div class="formula-input"><input type="number" id="salesS2_2" placeholder="S2" oninput="updateOutput2()" /></div>
+              <span class="formula-operator">=</span>
+              <div class="formula-result"><span class="value-no-rp" id="salesHasil2">0</span></div>
+            </div>
+
+            <div class="formula-row">
+              <div class="formula-label"><i class="fas fa-receipt"></i>CU <span>(S1 + S2)</span></div>
+              <div class="formula-input"><input type="number" id="cuS1_2" placeholder="S1" oninput="updateOutput2()" /></div>
+              <span class="formula-operator">+</span>
+              <div class="formula-input"><input type="number" id="cuS2_2" placeholder="S2" oninput="updateOutput2()" /></div>
+              <span class="formula-operator">=</span>
+              <div class="formula-result"><span class="value-no-rp" id="cuHasil2">0</span></div>
+            </div>
+
+            <div class="formula-row">
+              <div class="formula-label"><i class="fas fa-chart-pie"></i>Avg <span>(Sales ÷ CU)</span></div>
+              <div class="formula-input"><input type="number" id="avgInput1_2" placeholder="Sales" oninput="updateOutput2()" disabled /></div>
+              <span class="formula-operator">÷</span>
+              <div class="formula-input"><input type="number" id="avgInput2_2" placeholder="CU" oninput="updateOutput2()" disabled /></div>
+              <span class="formula-operator">=</span>
+              <div class="formula-result"><span class="value-no-rp" id="avgHasil2">0</span></div>
+            </div>
+          </div>
+
+          <!-- MENU BARU RUMUS 2 -->
+          <div class="section">
+            <div class="section-title"><i class="fas fa-utensils"></i> Menu Baru</div>
+            <div id="menuContainer2"></div>
+          </div>
+
+          <!-- ECOMMERCE RUMUS 2 -->
+          <div class="section">
+            <div class="section-title"><i class="fas fa-store"></i> Ecommerce & Transfer</div>
+            <div id="ecommerceContainer2"></div>
+          </div>
+
+          <!-- WASTE RUMUS 2 -->
+          <div class="section">
+            <div class="section-title"><i class="fas fa-trash-can"></i> Waste</div>
+            <div class="inline-group">
+              <div class="item"><i class="fas fa-drumstick-bite"></i><label>AB</label><input type="number" id="ab2" oninput="updateOutput2()" placeholder="pcs" /></div>
+              <div class="item"><i class="fas fa-drumstick"></i><label>AK</label><input type="number" id="ak2" oninput="updateOutput2()" placeholder="pcs" /></div>
+              <div class="item"><i class="fas fa-bowl-rice"></i><label>Nasi</label><input type="number" id="nasi2" oninput="updateOutput2()" placeholder="porsi" /></div>
+            </div>
+          </div>
+
+          <!-- CUACA RUMUS 2 -->
+          <div class="section">
+            <div class="section-title"><i class="fas fa-cloud-sun"></i> Cuaca</div>
+            <div class="inline-group">
+              <div class="item"><i class="fas fa-sun"></i><label>Pagi</label><input type="text" id="pagi2" value="Cerah" oninput="updateOutput2()" /></div>
+              <div class="item"><i class="fas fa-sun"></i><label>Siang</label><input type="text" id="siang2" value="Panas" oninput="updateOutput2()" /></div>
+              <div class="item"><i class="fas fa-cloud-sun"></i><label>Sore</label><input type="text" id="sore2" value="Cerah" oninput="updateOutput2()" /></div>
+              <div class="item"><i class="fas fa-cloud-moon"></i><label>Malam</label><input type="text" id="malam2" value="Mendung" oninput="updateOutput2()" /></div>
+            </div>
+          </div>
+
+          <!-- PENGELUARAN RUMUS 2 -->
+          <div class="section">
+            <div class="section-title">
+              <span><i class="fas fa-money-bill-wave"></i> Pengeluaran</span>
+              <button class="btn-add" onclick="tambahPengeluaran2()"><i class="fas fa-plus"></i> Tambah</button>
+            </div>
+            <div id="pengeluaranContainer2"></div>
+            <div class="total-semua">
+              <span class="label"><i class="fas fa-calculator"></i> Total Semua Pengeluaran</span>
+              <span class="value" id="totalPengeluaran2">Rp 0</span>
+            </div>
+          </div>
+
+          <!-- TIM RUMUS 2 -->
+          <div class="section">
+            <div class="section-title">
+              <span><i class="fas fa-users"></i> Tim yang Bertugas</span>
+              <button class="btn-add" onclick="tambahTim2()"><i class="fas fa-plus"></i> Tambah</button>
+            </div>
+            <div id="timContainer2"></div>
+          </div>
+        </div>
+
+        <!-- OUTPUT LENGKAP SALES -->
+        <div class="output-section">
+          <div class="section-title">
+            <span><i class="fas fa-file-alt"></i> Laporan Lengkap</span>
+            <button onclick="copyOutput()"><i class="fas fa-copy"></i> Salin</button>
+          </div>
+          <div class="output-text" id="outputText"></div>
+        </div>
+
+        <div class="sales-footer">
+          <i class="fas fa-star"></i> Terimakasih <i class="fas fa-star"></i>
+        </div>
+
+      </div>
+    </div>
   </div>
 
-  <!-- Tab Bar Bawah -->
+  <!-- Toast Notification -->
+  <div class="toast" id="toast"><i class="fas fa-check-circle"></i> Laporan tersalin!</div>
+
+  <!-- Bottom Nav -->
   <nav class="bottom-nav">
     <button class="nav-btn active" data-tab="tab-stok">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
@@ -53,6 +421,10 @@
     <button class="nav-btn" data-tab="tab-kurangan">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M9 14h6"/></svg>
       <span>Kurangan Stok</span>
+    </button>
+    <button class="nav-btn" data-tab="tab-sales">
+      <i class="fas fa-chart-line" style="font-size: 16px;"></i>
+      <span>Laporan Sales</span>
     </button>
   </nav>
 
