@@ -36,22 +36,20 @@ body {
   margin: 0 auto;
 }
 
-/* Banner Styling Neumorphism */
+/* Banner Header (Presisi Rasio 1200x480 & Pas Lebar Kontainer) */
 .banner-header {
-  margin-bottom: 24px;
+  width: 100%;
+  aspect-ratio: 1200 / 480;
+  margin-bottom: 20px;
   border-radius: 16px;
   overflow: hidden;
   box-shadow: var(--neu-shadow-flat);
   background: var(--bg-color);
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .banner-img {
   width: 100%;
-  height: auto;
-  max-height: 220px;
+  height: 100%;
   object-fit: cover;
   display: block;
   border-radius: 16px;
@@ -242,8 +240,5 @@ input[type="number"]:focus, select:focus {
   .input-row {
     grid-template-columns: 50px 1fr 58px 26px;
     gap: 4px;
-  }
-  .banner-img {
-    max-height: 140px;
   }
 }
