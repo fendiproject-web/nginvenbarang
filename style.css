@@ -9,7 +9,6 @@
   --accent-orange: #dd6b20;
   --accent-red: #ef4444;
 
-  /* Bayangan Neumorphism Presisi & Halus */
   --neu-shadow-flat: 6px 6px 12px #a3b1c6, -6px -6px 12px #ffffff;
   --neu-shadow-hover: 9px 9px 16px #98a7bd, -9px -9px 16px #ffffff;
   --neu-shadow-inset: inset 2px 2px 5px #b8c5d6, inset -2px -2px 5px #ffffff;
@@ -37,7 +36,6 @@ body {
   margin: 0 auto;
 }
 
-/* Grid Layout Proporsional */
 .inventory-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -45,7 +43,6 @@ body {
   width: 100%;
 }
 
-/* Neumorphic Card Component */
 .neu-card {
   background: var(--bg-color);
   border-radius: 16px;
@@ -216,7 +213,6 @@ input[type="number"]:focus, select:focus {
   box-shadow: var(--neu-shadow-btn-pressed);
 }
 
-/* Responsif Layar HP */
 @media (max-width: 640px) {
   .inventory-grid {
     grid-template-columns: 1fr;
