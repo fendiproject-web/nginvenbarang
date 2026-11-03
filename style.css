@@ -9,7 +9,7 @@
   --accent-orange: #dd6b20;
   --accent-red: #ef4444;
 
-  /* Bayangan Neumorphism Presisi */
+  /* Bayangan Neumorphism Presisi & Halus */
   --neu-shadow-flat: 6px 6px 12px #a3b1c6, -6px -6px 12px #ffffff;
   --neu-shadow-hover: 9px 9px 16px #98a7bd, -9px -9px 16px #ffffff;
   --neu-shadow-inset: inset 2px 2px 5px #b8c5d6, inset -2px -2px 5px #ffffff;
@@ -28,7 +28,7 @@ body {
   background-color: var(--bg-color);
   color: var(--text-main);
   min-height: 100vh;
-  padding: 24px 14px;
+  padding: 20px 14px;
 }
 
 .app-container {
@@ -36,38 +36,25 @@ body {
   margin: 0 auto;
 }
 
-.app-header {
-  text-align: center;
+/* Banner Styling Neumorphism */
+.banner-header {
   margin-bottom: 24px;
-}
-
-.header-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--neu-shadow-flat);
   background: var(--bg-color);
-  color: var(--accent-blue);
-  padding: 6px 16px;
-  border-radius: 20px;
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  box-shadow: var(--neu-shadow-btn);
-  margin-bottom: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.app-header h1 {
-  font-size: 1.75rem;
-  font-weight: 800;
-  color: #1a202c;
-  letter-spacing: -0.5px;
-}
-
-.app-header p {
-  color: var(--text-muted);
-  font-size: 0.85rem;
-  margin-top: 4px;
+.banner-img {
+  width: 100%;
+  height: auto;
+  max-height: 220px;
+  object-fit: cover;
+  display: block;
+  border-radius: 16px;
 }
 
 /* Compact Grid Layout */
@@ -255,5 +242,8 @@ input[type="number"]:focus, select:focus {
   .input-row {
     grid-template-columns: 50px 1fr 58px 26px;
     gap: 4px;
+  }
+  .banner-img {
+    max-height: 140px;
   }
 }
